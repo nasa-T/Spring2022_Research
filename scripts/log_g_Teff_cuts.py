@@ -1,9 +1,9 @@
 import pandas as pd
 import matplotlib.pyplot as plt
 
-SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers.csv'
-DESTINATION_KEEPERS = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers2.csv'
-DESTINATION_ANNIHILATED = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_exterminated2.csv'
+SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data.csv'
+DESTINATION_KEEPERS = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers.csv'
+DESTINATION_ANNIHILATED = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_exterminated.csv'
 df = pd.read_csv(SOURCE) # dataframe to manipulate
 log_g = df.loc[:,'log(g) (cm/s2)']
 teff = df.loc[:,'Teff']
@@ -26,20 +26,24 @@ y3 = lambda x3 : m3 * x3 + b3 # line between (5.0, 3950) and (4.8, 2000)
 yep1 = df.loc[:,'log(g) (cm/s2)'] > y1(df.loc[:,'Teff'])
 yep2 = df.loc[:,'log(g) (cm/s2)'] < y2(df.loc[:,'Teff'])
 yep3 = df.loc[:,'log(g) (cm/s2)'] < y3(df.loc[:,'Teff'])
+no1 = df.loc[:,'log(g) (cm/s2)'] < y1(df.loc[:,'Teff'])
+no2 = df.loc[:,'log(g) (cm/s2)'] > y2(df.loc[:,'Teff'])
+no3 = df.loc[:,'log(g) (cm/s2)'] > y3(df.loc[:,'Teff'])
 stay1 = df.loc[:,'log(g) (cm/s2)'].isnull()
 stay2 = df.loc[:,'Teff'].isnull()
 
 df2 = df[yep1 & yep2 & yep3 | stay1 | stay2] # another dataframe for YSOs (made the cut)
-df3 = df[-yep1 & -yep2 & -yep3] # objects that didn't make the cut
+df3 = df[-(yep1 & yep2 & yep3 | stay1 | stay2)] # objects that didn't make the cut
 log_g = df2.loc[:,'log(g) (cm/s2)'] # coords for YSOs
 teff = df2.loc[:,'Teff']
 plt.plot(teff, log_g, 'o')
 plt.plot(cut_teff, cut_log_g, 'k-')
 plt.show()
-print(df2)
-print(df3) 
-df2.to_csv(DESTINATION_KEEPERS)
-df3.to_csv(DESTINATION_ANNIHILATED)
+print(df.loc[:,['Teff','log(g) (cm/s2)']])
+print(df2.loc[:,['Teff','log(g) (cm/s2)']])
+print(df3.loc[:,['Teff','log(g) (cm/s2)']]) 
+df2.to_csv(DESTINATION_KEEPERS, index=False)
+df3.to_csv(DESTINATION_ANNIHILATED, index=False)
 # assume missing data is part of sample
 # 3 sigma on parallax cuts
 # check parallax-exterminated for log(g)-Teff
