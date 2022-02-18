@@ -44,4 +44,5 @@ from lifelines import KaplanMeierFitter
 kmf = KaplanMeierFitter()
 kmf.fit(masses, detected)
 kmf.plot_survival_function()
-
+kmf.plot_cumulative_density()
+plt.show()
