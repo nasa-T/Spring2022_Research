@@ -33,16 +33,16 @@ Mjup = 1.898E30 # mass of jupiter in g
 B = lambda wavelength, temp: (2 * h * (c**2) / (wavelength**5)) / (np.e**(h*c/(wavelength*kb*temp))) 
 # flux to mass conversion:
 mass = lambda F, distance: (F * distance**2) / (opacity * z * B(wl,20))
-
-# fluxes and distances randomly picked in gaussian distribution:
-rFlux = flux + flux_err * np.random.randn() 
-rDist = dist + dist_err * np.random.randn() 
-masses = mass(rFlux, rDist) # masses calculated from random fluxes and distances
-print(masses, detected)
-
 from lifelines import KaplanMeierFitter
-kmf = KaplanMeierFitter()
-kmf.fit(masses, detected)
-kmf.plot_survival_function()
-kmf.plot_cumulative_density()
-plt.show()
+n = 10 # how many different plots
+for i in range(n):
+    # fluxes and distances randomly picked in gaussian distribution:
+    rFlux = flux + flux_err * np.random.randn() 
+    rDist = dist + dist_err * np.random.randn() 
+    masses = mass(rFlux, rDist) # masses calculated from random fluxes and distances
+    # print(masses, detected)
+    kmf = KaplanMeierFitter()
+    kmf.fit(masses, detected)
+    kmf.plot_survival_function()
+    kmf.plot_cumulative_density()
+    plt.show()
