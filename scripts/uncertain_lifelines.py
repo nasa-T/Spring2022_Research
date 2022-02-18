@@ -14,11 +14,12 @@ import pandas as pd
 
 SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers2.csv'
 df = pd.read_csv(SOURCE)
-
+df = df.loc[:108]
 flux = df.loc[:,'Flux (Jy)']
 flux_err = df.loc[:,'Flux_err'] # flux error
 dist = df.loc[:,'p'] # distance
 dist_err = df.loc[:,'p_error'] # distance error
+detected = df.loc[:,'Disk Mass err'] != -10 # boolean mask for detections
 wl = 1.3E-3 # wavelength of interest (ALMA Band 6)
 z = 0.01 # dust-to-gas ratio
 h = 6.626E-34 # Planck's Constant
@@ -33,6 +34,14 @@ B = lambda wavelength, temp: (2 * h * (c**2) / (wavelength**5)) / (np.e**(h*c/(w
 # flux to mass conversion:
 mass = lambda F, distance: (F * distance**2) / (opacity * z * B(wl,20))
 
-rFlux = flux + flux_err * np.random.randn()
-rDist = dist + dist_err * np.random.randn()
-print(mass(rFlux, rDist))
+# fluxes and distances randomly picked in gaussian distribution:
+rFlux = flux + flux_err * np.random.randn() 
+rDist = dist + dist_err * np.random.randn() 
+masses = mass(rFlux, rDist) # masses calculated from random fluxes and distances
+print(masses, detected)
+
+from lifelines import KaplanMeierFitter
+kmf = KaplanMeierFitter()
+kmf.fit(masses, detected)
+kmf.plot_survival_function()
+
