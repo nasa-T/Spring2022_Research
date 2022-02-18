@@ -42,9 +42,10 @@ plt.show()
 print(df.loc[:,['Teff','log(g) (cm/s2)']])
 print(df2.loc[:,['Teff','log(g) (cm/s2)']])
 print(df3.loc[:,['Teff','log(g) (cm/s2)']]) 
-df2.to_csv(DESTINATION_KEEPERS, index=False)
-df3.to_csv(DESTINATION_ANNIHILATED, index=False)
+# df2.to_csv(DESTINATION_KEEPERS, index=False)
+# df3.to_csv(DESTINATION_ANNIHILATED, index=False)
 # assume missing data is part of sample
 # 3 sigma on parallax cuts
 # check parallax-exterminated for log(g)-Teff
+# color bar for parallaxes
 
