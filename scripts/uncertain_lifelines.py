@@ -14,7 +14,7 @@ import pandas as pd
 
 SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers2.csv'
 df = pd.read_csv(SOURCE)
-df = df.loc[:108]
+df = df.loc[:108] # non-data rows removed
 flux = df.loc[:,'Flux (Jy)']
 flux_err = df.loc[:,'Flux_err'] # flux error
 dist = df.loc[:,'p'] # distance
