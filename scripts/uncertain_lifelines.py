@@ -47,7 +47,7 @@ B = lambda frequency, temp: (2 * h.cgs.value * (frequency ** 3)) / (c.cgs.value*
 mass = lambda F, distance: ((F * distance**2) / (opacity * z * B(freq,20))) / Mjup
 # print(mass(flux, dist))
 from lifelines import KaplanMeierFitter
-n = 100 # how many different plots
+n = 10 # how many different plots
 for i in range(n):
     # fluxes and distances randomly picked in gaussian distribution:
     rFlux = flux + flux_err * np.random.randn() 

@@ -1,5 +1,7 @@
 import pandas as pd
 import matplotlib.pyplot as plt
+import matplotlib as mpl
+
 
 SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data.csv'
 DESTINATION_KEEPERS = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers.csv'
@@ -9,7 +11,12 @@ log_g = df.loc[:,'log(g) (cm/s2)']
 teff = df.loc[:,'Teff']
 cut_log_g = [1.7, 4.5, 5.0, 4.8] # log_g coords of points of cutoff
 cut_teff = [3300, 4875, 3950, 2000] # Teff coords of points of cutoff
-plt.plot(teff, log_g, 'o') # plot all data
+print(df.loc[:,'p'])
+norm = mpl.colors.Normalize(vmin=0.5, vmax=5)
+cmap = mpl.cm.Spectral
+plt.scatter(teff, log_g, c=df.loc[:,'p'], s=10, alpha=1, cmap=cmap)
+plt.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), label='parallax', orientation='vertical')
+# plt.plot(teff, log_g, 'o') # plot all data
 plt.plot(cut_teff, cut_log_g, 'k-') # plot cutoff
 plt.show()
 
@@ -36,12 +43,15 @@ df2 = df[yep1 & yep2 & yep3 | stay1 | stay2] # another dataframe for YSOs (made 
 df3 = df[-(yep1 & yep2 & yep3 | stay1 | stay2)] # objects that didn't make the cut
 log_g = df2.loc[:,'log(g) (cm/s2)'] # coords for YSOs
 teff = df2.loc[:,'Teff']
-plt.plot(teff, log_g, 'o')
+
+# plt.plot(teff, log_g, 'o')
 plt.plot(cut_teff, cut_log_g, 'k-')
+plt.scatter(teff, log_g, c=df2.loc[:,'p'], s=10, alpha=1, cmap=cmap)
+plt.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), label='parallax', orientation='vertical')
 plt.show()
-print(df.loc[:,['Teff','log(g) (cm/s2)']])
-print(df2.loc[:,['Teff','log(g) (cm/s2)']])
-print(df3.loc[:,['Teff','log(g) (cm/s2)']]) 
+# print(df.loc[:,['Teff','log(g) (cm/s2)']])
+# print(df2.loc[:,['Teff','log(g) (cm/s2)']])
+# print(df3.loc[:,['Teff','log(g) (cm/s2)']]) 
 # df2.to_csv(DESTINATION_KEEPERS, index=False)
 # df3.to_csv(DESTINATION_ANNIHILATED, index=False)
 # assume missing data is part of sample
