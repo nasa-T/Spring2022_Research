@@ -19,7 +19,7 @@ SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers2.csv'
 df = pd.read_csv(SOURCE)
 df = df.loc[:108] # non-data rows removed
 detected = df.loc[:,'Disk Mass err'] != -10 # boolean mask for detections
-# replace wrong error values with half of parallax range of Orion (2 < p < 3.5):
+# change 'null' error values to half of parallax range of Orion (2 < p < 3.5):
 df['p_error'] = df['p_error'].mask(df.loc[:,'p_error'] == -10, 0.75) 
 flux = df.loc[:,'Flux (Jy)'] * 1E-23
 flux_err = df.loc[:,'Flux_err'] * 1E-23 # flux error
