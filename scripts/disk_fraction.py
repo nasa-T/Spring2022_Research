@@ -14,6 +14,9 @@ classII = (J-H) > j_h(H,K)
 df2 = df[classII]
 plt.plot(H-K, J-H, 'o')
 plt.plot(H-K, j_h(H,K), '-')
-ISR_vector = lambda x: 1.83*x
-plt.plot(np.arange(1,1.5,0.1), ISR_vector(np.arange(1,1.5,0.1)),'-')
+ISR_vector = lambda x, c: 1.83*x + c
+x1 = np.linspace(1.02/1.25,1.2,2)
+x2 = np.linspace(0.618/1.25,1.2,2)
+plt.plot(x1, ISR_vector(x1, -0.5),'-')
+plt.plot(x2, ISR_vector(x2, -0.098),'-')
 plt.show()
