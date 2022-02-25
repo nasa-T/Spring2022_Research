@@ -37,15 +37,17 @@ j_h = lambda h, k: 0.58 * (h-k) + 0.52
 classII = (J-H) > j_h(H,K)
 df2 = df[classII]
 # Plot tight-binary data:
-plt.plot(H-K, J-H, 'o')
+plt.plot(H-K, J-H, 'o', markersize=1)
 # Plot CTTS locus:
 plt.plot(H-K, j_h(H,K), 'k-')
 # Interstellar reddening vectors:
 ISR_vector = lambda x, c: 1.83 * x + c
-x1 = np.linspace(1.02/1.25,1.2,2)
-x2 = np.linspace(0.618/1.25,1.2,2)
+x1 = np.linspace(1.02/1.25,2.25,2)
+x2 = np.linspace(0.618/1.25,2.25,2)
 # c values found from Robberto et al. (2010):
 plt.plot(x1, ISR_vector(x1, -0.5),'k-') 
 plt.plot(x2, ISR_vector(x2, -0.098),'k-')
+plt.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
+
 plt.show()
 
