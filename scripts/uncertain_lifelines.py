@@ -30,21 +30,20 @@ dist_err = df.loc[:,'p_error'] / df.loc[:,'p'] * dist # distance error
 wl = .13 # wavelength of interest (ALMA Band 6)
 freq = c.cgs.value / wl # frequency of interest
 freq = (249.5 + 252 + 265 + 267.56) / 4 * 10**9
-# freq = 267.56E9
+# freq = 255.5E9
 z = 0.01 # dust-to-gas ratio
-opacity = 2.3 # dust opacity in cm^2/g
-β = 0.5
-# β = 0.5 because that's closest to the data lol:
-kappa = lambda frequency: 10 * (frequency/1E12)**β
+# opacity = 2.3 # dust opacity in cm^2/g
+kappa = lambda frequency: 10 * (frequency/1E12)
 opacity = kappa(freq)
 avgTemp = 20 # average disk temperature in Kelvin (Andrews et al., 2013)
 Mjup = M_jup.cgs.value # mass of jupiter in g
 
 # Planck blackbody function:
-B = lambda frequency, temp: (2 * h.cgs.value * (frequency ** 3)) / (c.cgs.value**2 * np.e**(h.cgs.value*frequency/(k_B.cgs.value*temp)) - 1)
+B = lambda frequency, temp: (2 * h.cgs.value * (frequency ** 3)) / (c.cgs.value**2 * (np.e**(h.cgs.value*frequency/(k_B.cgs.value*temp)) - 1))
     # (2 * h.cgs.value * (c.cgs.value**2) / (wavelength**5)) / (np.e**(h.cgs.value*c.cgs.value/(wavelength*k_B.cgs.value*temp))) 
 # flux to mass (in Mjup) conversion:
 mass = lambda F, distance: ((F * distance**2) / (opacity * z * B(freq,20))) / Mjup
+print(opacity, B(freq, 20))
 # print(mass(flux, dist))
 from lifelines import KaplanMeierFitter
 n = 10 # how many different plots
