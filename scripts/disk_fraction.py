@@ -37,7 +37,7 @@ j_h = lambda h, k: 0.58 * (h-k) + 0.52
 classII = (J-H) > j_h(H,K)
 df2 = df[classII]
 # Plot tight-binary data:
-plt.plot(H-K, J-H, 'o', markersize=1)
+plt.plot(H-K, J-H, 'o', markersize=4)
 # Plot CTTS locus:
 plt.plot(H-K, j_h(H,K), 'k-')
 # Interstellar reddening vectors:
