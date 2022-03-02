@@ -11,6 +11,10 @@ df = df.loc[:108] # non-data rows removed
 Jt = df.loc[:,'J']
 Ht = df.loc[:,'H']
 Kt = df.loc[:,'K']
+W1t = df.loc[:,'W1']
+W2t = df.loc[:,'W2']
+W3t = df.loc[:,'W3']
+W4t = df.loc[:,'W4']
 
 # Reading in non-tight-binary data
 from astropy.io import ascii
@@ -44,19 +48,25 @@ ISR_vector = lambda x, c: 1.83 * x + c
 x1 = np.linspace(1.02/1.25,2.25,2)
 x2 = np.linspace(0.618/1.25,2.25,2)
 # Make dataframe for objects above ISR vector; Class III YSOs:
-classIIIDaR = DaR2mHQ[DaR2mHQ['j_h'] > ISR_vector(DaR2mHQ['h_k'],-0.098)]
-classIIIK = K2mHQ[K2mHQ['j_h'] > ISR_vector(K2mHQ['h_k'],-0.098)]
-classIIIt = df[(Jt-Ht) > ISR_vector(Ht-Kt,-0.098)]
+JHKclassIIIDaR = DaR2mHQ[DaR2mHQ['j_h'] > ISR_vector(DaR2mHQ['h_k'],-0.098)]
+JHKclassIIIK = K2mHQ[K2mHQ['j_h'] > ISR_vector(K2mHQ['h_k'],-0.098)]
+JHKclassIIIt = df[(Jt-Ht) > ISR_vector(Ht-Kt,-0.098)]
 # Make dataframe for objects below ISR vector; Class II YSOs:
-classIIDaR = DaR2mHQ[DaR2mHQ['j_h'] < ISR_vector(DaR2mHQ['h_k'],-0.098)]
-classIIK = K2mHQ[K2mHQ['j_h'] < ISR_vector(K2mHQ['h_k'],-0.098)]
-classIIt = df[(Jt-Ht) < ISR_vector(Ht-Kt,-0.098)]
-print("Class III:II ratio for tight binary sample:",len(classIIIt)/len(classIIt))
-print("For DaRio 2016 sample:", len(classIIIDaR)/len(classIIDaR))
-print("For Kounkel 2016 sample:", len(classIIIK)/len(classIIK))
+JHKclassIIDaR = DaR2mHQ[DaR2mHQ['j_h'] < ISR_vector(DaR2mHQ['h_k'],-0.098)]
+JHKclassIIK = K2mHQ[K2mHQ['j_h'] < ISR_vector(K2mHQ['h_k'],-0.098)]
+JHKclassIIt = df[(Jt-Ht) < ISR_vector(Ht-Kt,-0.098)]
+print("Class III:II ratio for tight binary sample:",len(JHKclassIIIt)/len(JHKclassIIt))
+print("For DaRio 2016 sample:", len(JHKclassIIIDaR)/len(JHKclassIIDaR))
+print("For Kounkel 2016 sample:", len(JHKclassIIIK)/len(JHKclassIIK))
 # c values found from Robberto et al. (2010):
 # plt.plot(x1, ISR_vector(x1, -0.5),'k-') 
 plt.plot(x2, ISR_vector(x2, -0.098),'k-')
+plt.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
+plt.show()
+
+plt.plot(DaRwHQ['w3mpro']-DaRwHQ['w4mpro'], DaRwHQ['w1mpro']-DaRwHQ['w2mpro'],'o', markersize=0.5)
+plt.plot(KwHQ['w3mpro']-KwHQ['w4mpro'], KwHQ['w1mpro']-KwHQ['w2mpro'],'o', markersize=0.5)
+plt.plot(W3t-W4t, W1t-W2t, 'o', markersize=4)
 plt.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
 
 plt.show()
