@@ -81,12 +81,11 @@ print("Class II percentage of sample for tight binary sample (WISE 1,2,3):",len(
 print("For DaRio 2016 sample:", len(WclassIIDaR)/len(DaRwHQ) * 100, "%")
 print("For Kounkel 2016 sample:", len(WclassIIK)/len(KwHQ) * 100, "%")
 
-fig, ((ax1, ax2), (ax3, ax4)) = plt.subplots(2, 2)
+fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
 
 # Plot non-tight-binary data:
 ax1.plot(DaR2mHQ['h_k'], DaR2mHQ['j_h'], 'ro', markersize=0.5)
 ax1.plot(K2mHQ['h_k'], K2mHQ['j_h'], 'ko', markersize=0.5)
-
 # Plot tight-binary data:
 ax1.plot(Ht-Kt, Jt-Ht, 'o', markersize=4)
 # Plot CTTS locus:
@@ -100,6 +99,8 @@ x2 = np.linspace(0.618/1.25,2.25,2)
 # plt.plot(x1, ISR_vector(x1, -0.5),'k-') 
 ax1.plot(x2, ISR_vector(x2, -0.098),'k-')
 ax1.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
+ax1.set_xlabel('H-K')
+ax1.set_ylabel('J-H')
 
 # Plot W1-W2 vs. W2-W3:
 ax2.plot(W23DaR, W12DaR,'o', markersize=0.5)
@@ -115,11 +116,16 @@ ax2.plot(np.linspace(2,3.5,10), y4(np.linspace(2,3.5,10)), 'k-')
 ax2.plot(np.linspace(1.25,2.5,10), np.ones(10)*0.25, 'k-')
 ax2.plot(np.linspace(0.99,2,10),y6(np.linspace(0.99,2,10)), 'k-')
 ax2.plot(np.linspace(0.99,1.25,10), y7(np.linspace(0.99,1.25,10)),'k-')
+ax2.set_xlabel('W2-W3')
+ax2.set_ylabel('W1-W2')
+
 
 # Plot W1-W2 vs. W3-W4:
 ax3.plot(W34DaR, W12DaR,'o', markersize=0.5)
 ax3.plot(W34K, W12K,'o', markersize=0.5)
 ax3.plot(W34t, W12t, 'o', markersize=4)
 ax3.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
+ax3.set_xlabel('W3-W4')
+ax3.set_ylabel('W1-W2')
 
 plt.show()
