@@ -55,19 +55,45 @@ JHKclassIIIt = df[(Jt-Ht) > ISR_vector(Ht-Kt,-0.098)]
 JHKclassIIDaR = DaR2mHQ[DaR2mHQ['j_h'] < ISR_vector(DaR2mHQ['h_k'],-0.098)]
 JHKclassIIK = K2mHQ[K2mHQ['j_h'] < ISR_vector(K2mHQ['h_k'],-0.098)]
 JHKclassIIt = df[(Jt-Ht) < ISR_vector(Ht-Kt,-0.098)]
-print("Class III:II ratio for tight binary sample:",len(JHKclassIIIt)/len(JHKclassIIt))
-print("For DaRio 2016 sample:", len(JHKclassIIIDaR)/len(JHKclassIIDaR))
-print("For Kounkel 2016 sample:", len(JHKclassIIIK)/len(JHKclassIIK))
+print("Class II Percentage for tight binary sample (JHK):",len(JHKclassIIt)/len(JHKclassIIIt) * 100, "%")
+print("For DaRio 2016 sample:", len(JHKclassIIDaR)/len(JHKclassIIIDaR) * 100, "%")
+print("For Kounkel 2016 sample:", len(JHKclassIIK)/len(JHKclassIIIK) * 100, "%")
 # c values found from Robberto et al. (2010):
 # plt.plot(x1, ISR_vector(x1, -0.5),'k-') 
 plt.plot(x2, ISR_vector(x2, -0.098),'k-')
 plt.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
 plt.show()
-
-plt.plot(DaRwHQ['w3mpro']-DaRwHQ['w4mpro'], DaRwHQ['w1mpro']-DaRwHQ['w2mpro'],'o', markersize=0.5)
-plt.plot(KwHQ['w3mpro']-KwHQ['w4mpro'], KwHQ['w1mpro']-KwHQ['w2mpro'],'o', markersize=0.5)
-plt.plot(W3t-W4t, W1t-W2t, 'o', markersize=4)
+W23DaR = DaRwHQ['w2mpro']-DaRwHQ['w3mpro']
+W12DaR = DaRwHQ['w1mpro']-DaRwHQ['w2mpro']
+W23K = KwHQ['w2mpro']-KwHQ['w3mpro']
+W12K = KwHQ['w1mpro']-KwHQ['w2mpro']
+W23t = W2t-W3t
+W12t = W1t-W2t
+plt.plot(W23DaR, W12DaR,'o', markersize=0.5)
+plt.plot(W23K, W12K,'o', markersize=0.5)
+plt.plot(W23t, W12t, 'o', markersize=4)
 plt.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
 
-plt.show()
+# Boundaries for YSOs
+y3 = lambda Δw: 0.46 * (Δw) - 0.9 # also eqn 8
+y4 = lambda Δw: -0.42 * (Δw) + 2.2 # also eqn 9
+y6 = lambda Δw: 0.71 * (Δw) - 0.07
+y7 = lambda Δw: -1.5 * (Δw) + 2.1
 
+plt.plot(np.ones(10)*2.0, np.linspace(1.3,3.5,10), 'k-')
+plt.plot(np.ones(10)*4.5, np.linspace(1.15,3.5,10), 'k-')
+plt.plot(np.linspace(2.5,4.5,10), y3(np.linspace(2.5,4.5,10)), 'k-')
+plt.plot(np.linspace(2,3.5,10), y4(np.linspace(2,3.5,10)), 'k-')
+
+plt.plot(np.linspace(1.25,2.5,10), np.ones(10)*0.25, 'k-')
+plt.plot(np.linspace(0.99,2,10),y6(np.linspace(0.99,2,10)), 'k-')
+plt.plot(np.linspace(0.99,1.25,10), y7(np.linspace(0.99,1.25,10)),'k-')
+
+WclassIIt = df[ (W12t > 0.25) & (W12t < y6(W23t)) & (W12t > y7(W23t)) & (W12t > y3(W23t)) & (W12t < y4(W23t)) ]
+WclassIIDaR = DaRwHQ[ (W12DaR > 0.25) & (W12DaR < y6(W23DaR)) & (W12DaR > y7(W23DaR)) & (W12DaR > y3(W23DaR)) & (W12DaR < y4(W23DaR)) ]
+WclassIIK = KwHQ[ (W12K > 0.25) & (W12K < y6(W23K)) & (W12K > y7(W23K)) & (W12K > y3(W23K)) & (W12K < y4(W23K)) ]
+
+print("Class II percentage of sample for tight binary sample (WISE 1,2,3):",len(WclassIIt)/len(df[W1t.notnull() & W2t.notnull() & W3t.notnull()]) * 100, "%")
+print("For DaRio 2016 sample:", len(WclassIIDaR)/len(DaRwHQ) * 100, "%")
+print("For Kounkel 2016 sample:", len(WclassIIK)/len(KwHQ) * 100, "%")
+plt.show()
