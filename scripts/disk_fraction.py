@@ -38,11 +38,15 @@ plt.plot(DaR2mHQ['h_k'], DaR2mHQ['j_h'], 'ro', markersize=0.5)
 plt.plot(K2mHQ['h_k'], K2mHQ['j_h'], 'ko', markersize=0.5)
 # CTTS locus equation:
 j_h = lambda h, k: 0.58 * (h-k) + 0.52
-
+# MS Curve from Pecaut & Mamajek 2013:
+MSjh = np.array([0.11,0.14,0.15,0.16,0.17,0.19,0.21,0.22,0.23,0.23,0.24,0.25,0.27,0.29,0.31,0.33,0.35,0.37,0.39,0.41,0.43,0.46,0.49,0.55,0.60,0.64,0.66,0.66,0.67,0.67,0.68,0.68,0.67,0.66,0.62,0.55,0.54,0.58,0.65,0.70])
+MShk = np.array([0.06,0.07,0.08,0.08,0.08,0.08,0.09,0.09,0.09,0.09,0.09,0.10,0.10,0.10,0.11,0.11,0.12,0.12,0.12,0.13,0.13,0.14,0.14,0.16,0.17,0.18,0.19,0.19,0.20,0.20,0.21,0.22,0.23,0.25,0.27,0.31,0.36,0.41,0.45,0.47])
 # Plot tight-binary data:
 plt.plot(Ht-Kt, Jt-Ht, 'o', markersize=4)
 # Plot CTTS locus:
 plt.plot(Ht-Kt, j_h(Ht,Kt), 'k-')
+# Plot MS curve:
+plt.plot(MShk, MSjh, 'k-')
 # Interstellar reddening vectors:
 ISR_vector = lambda x, c: 1.83 * x + c
 x1 = np.linspace(1.02/1.25,2.25,2)
@@ -63,10 +67,13 @@ print("For Kounkel 2016 sample:", len(JHKclassIIK)/len(JHKclassIIIK) * 100, "%")
 plt.plot(x2, ISR_vector(x2, -0.098),'k-')
 plt.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
 plt.show()
+W34DaR = DaRwHQ['w3mpro']-DaRwHQ['w4mpro']
 W23DaR = DaRwHQ['w2mpro']-DaRwHQ['w3mpro']
 W12DaR = DaRwHQ['w1mpro']-DaRwHQ['w2mpro']
+W34K = KwHQ['w3mpro']-KwHQ['w4mpro']
 W23K = KwHQ['w2mpro']-KwHQ['w3mpro']
 W12K = KwHQ['w1mpro']-KwHQ['w2mpro']
+W34t = W3t-W4t
 W23t = W2t-W3t
 W12t = W1t-W2t
 plt.plot(W23DaR, W12DaR,'o', markersize=0.5)
@@ -96,4 +103,10 @@ WclassIIK = KwHQ[ (W12K > 0.25) & (W12K < y6(W23K)) & (W12K > y7(W23K)) & (W12K 
 print("Class II percentage of sample for tight binary sample (WISE 1,2,3):",len(WclassIIt)/len(df[W1t.notnull() & W2t.notnull() & W3t.notnull()]) * 100, "%")
 print("For DaRio 2016 sample:", len(WclassIIDaR)/len(DaRwHQ) * 100, "%")
 print("For Kounkel 2016 sample:", len(WclassIIK)/len(KwHQ) * 100, "%")
+plt.show()
+
+plt.plot(W34DaR, W12DaR,'o', markersize=0.5)
+plt.plot(W34K, W12K,'o', markersize=0.5)
+plt.plot(W34t, W12t, 'o', markersize=4)
+plt.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
 plt.show()
