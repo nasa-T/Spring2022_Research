@@ -77,9 +77,9 @@ print("Class II Percentage for tight binary sample (JHK):",len(JHKclassIIt)/len(
 print("For DaRio 2016 sample:", len(JHKclassIIDaR)/len(JHKclassIIIDaR) * 100, "%")
 print("For Kounkel 2016 sample:", len(JHKclassIIK)/len(JHKclassIIIK) * 100, "%")
 
-print("Class II percentage of sample for tight binary sample (WISE 1,2,3):",len(WclassIIt)/len(df[W1t.notnull() & W2t.notnull() & W3t.notnull()]) * 100, "%")
-print("For DaRio 2016 sample:", len(WclassIIDaR)/len(DaRwHQ) * 100, "%")
-print("For Kounkel 2016 sample:", len(WclassIIK)/len(KwHQ) * 100, "%")
+print("Class II percentage of sample for tight binary sample (WISE 1,2,3):",'%.2f'%(len(WclassIIt)/len(df[W1t.notnull() & W2t.notnull() & W3t.notnull()]) * 100), "±", '%.2f'%(np.sqrt(len(WclassIIt))/len(df[W1t.notnull() & W2t.notnull() & W3t.notnull()]) * 100), "%")
+print("For DaRio 2016 sample:", '%.2f'%(len(WclassIIDaR)/len(DaRwHQ) * 100), "±", '%.2f'%(np.sqrt(len(WclassIIDaR))/len(DaRwHQ) * 100), "%")
+print("For Kounkel 2016 sample:", '%.2f'%(len(WclassIIK)/len(KwHQ) * 100), "±", '%.2f'%(np.sqrt(len(WclassIIK))/len(KwHQ) * 100), "%")
 
 fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
 
