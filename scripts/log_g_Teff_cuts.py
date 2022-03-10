@@ -3,9 +3,9 @@ import matplotlib.pyplot as plt
 import matplotlib as mpl
 
 
-SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data.csv'
-DESTINATION_KEEPERS = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers.csv'
-DESTINATION_ANNIHILATED = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_exterminated.csv'
+SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data2.csv'
+# DESTINATION_KEEPERS = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers.csv'
+# DESTINATION_ANNIHILATED = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_exterminated.csv'
 df = pd.read_csv(SOURCE) # dataframe to manipulate
 tooClose = df[df.loc[:,'p'] > 3.5]
 tooFar = df[df.loc[:,'p'] < 2]
@@ -22,10 +22,16 @@ cut_teff = [3300, 4875, 3950, 2000] # Teff coords of points of cutoff
 norm = mpl.colors.Normalize(vmin=0.5, vmax=5)
 cmap = mpl.cm.coolwarm
 # plt.scatter(teff, log_g, c=df.loc[:,'p'], s=10, alpha=1, cmap=cmap)
-plt.plot(Fteff, Flog_g, 'ro')
-plt.plot(Gteff, Glog_g, 'bo')
-plt.plot(Cteff, Clog_g, 'go')
+# plt.plot(Fteff, Flog_g, 'ro')
+# plt.plot(Gteff, Glog_g, 'bo')
+# plt.plot(Cteff, Clog_g, 'go')
+plt.errorbar(Fteff, Flog_g, fmt='ro', xerr=tooFar.loc[:,'Teff_error'], yerr=tooFar.loc[:,'log(g)_error'],markersize=3)
+plt.errorbar(Gteff, Glog_g, fmt='bo', xerr=Goldilocks.loc[:,'Teff_error'], yerr=Goldilocks.loc[:,'log(g)_error'],markersize=3)
+plt.errorbar(Cteff, Clog_g, fmt='go', xerr=tooClose.loc[:,'Teff_error'], yerr=tooClose.loc[:,'log(g)_error'],markersize=3)
 plt.legend(['Too Far', 'Just Right', 'Too Close'])
+plt.xlabel('teff')
+plt.ylabel('log(g)')
+# plt.errorbar(df.loc[:,'Teff'], df.loc[:,'log(g) (cm/s2)'], fmt='o', xerr=df.loc[:,'Teff_error'], yerr=df.loc[:,'log(g)_error'])
 # plt.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), label='parallax', orientation='vertical')
 # plt.plot(teff, log_g, 'o') # plot all data
 plt.plot(cut_teff, cut_log_g, 'k-') # plot cutoff
