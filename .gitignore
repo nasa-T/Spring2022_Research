@@ -1,3 +1,4 @@
 ALMA_tight_binaries_Data.csv ALMA_tight_binaries_Data_exterminated.csv ALMA_tight_binaries_Data_exterminated2.csv ALMA_tight_binaries_Data_exterminated3.csv ALMA_tight_binaries_Data_keepers.csv ALMA_tight_binaries_Data_keepers2.csv Kounkel2019_data.csv Kounkel2019_data_convertedCoords.csv
 
 infrareddata/
+*.csv
