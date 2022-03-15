@@ -48,6 +48,35 @@ ax1.set_title('W1')
 ax2.set_title('W2')
 ax3.set_title('W3')
 ax4.set_title('W4')
+ax1.set_xlabel('Distance of Emission (au)')
+ax1.set_ylabel('Magnitude of Emission')
+ax2.set_xlabel('Distance of Emission (au)')
+ax2.set_ylabel('Magnitude of Emission')
+ax3.set_xlabel('Distance of Emission (au)')
+ax3.set_ylabel('Magnitude of Emission')
+ax4.set_xlabel('Distance of Emission (au)')
+ax4.set_ylabel('Magnitude of Emission')
+plt.show()
+
+# Making "profiles" of disks with all WISE bands
+# gather only objects with data from all WISE bands:
+df2 = df[df.loc[:,'W1'].notnull() & df.loc[:,'W2'].notnull() & df.loc[:,'W3'].notnull() & df.loc[:,'W4'].notnull()].reset_index()
+Tstar2 = df2.loc[:,'Teff'] * u.K
+W1_2 = df2.loc[:,'W1']
+W2_2 = df2.loc[:,'W2']
+W3_2 = df2.loc[:,'W3']
+W4_2 = df2.loc[:,'W4']
+d2W1 = d(Tstar2,Tdust(W1_wl))
+d2W2 = d(Tstar2,Tdust(W2_wl))
+d2W3 = d(Tstar2,Tdust(W3_wl))
+d2W4 = d(Tstar2,Tdust(W4_wl))
+
+for i in range(len(df2)):
+    distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
+    mags = np.array([W1_2.loc[i], W2_2.loc[i], W3_2.loc[i], W4_2.loc[i]])
+    plt.plot(distances, mags)
+plt.gca().invert_yaxis()
 plt.xlabel('Distance of Emission (au)')
 plt.ylabel('Magnitude of Emission')
 plt.show()
+
