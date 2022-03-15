@@ -73,9 +73,10 @@ WclassIIt = df[ (W12t > 0.25) & (W12t < y6(W23t)) & (W12t > y7(W23t)) & (W12t > 
 WclassIIDaR = DaRwHQ[ (W12DaR > 0.25) & (W12DaR < y6(W23DaR)) & (W12DaR > y7(W23DaR)) & (W12DaR > y3(W23DaR)) & (W12DaR < y4(W23DaR)) ]
 WclassIIK = KwHQ[ (W12K > 0.25) & (W12K < y6(W23K)) & (W12K > y7(W23K)) & (W12K > y3(W23K)) & (W12K < y4(W23K)) ]
 
-print("Class II Percentage for tight binary sample (JHK):",len(JHKclassIIt)/len(JHKclassIIIt) * 100, "%")
-print("For DaRio 2016 sample:", len(JHKclassIIDaR)/len(JHKclassIIIDaR) * 100, "%")
-print("For Kounkel 2016 sample:", len(JHKclassIIK)/len(JHKclassIIIK) * 100, "%")
+print("Class II Percentage for tight binary sample (JHK):",'%.2f'%(len(JHKclassIIt)/(len(JHKclassIIIt) + len(JHKclassIIt)) * 100), "±", 
+'%.2f'%(np.sqrt(len(JHKclassIIt))/len(df[Jt.notnull() & Ht.notnull() & Kt.notnull()]) * 100), "%")
+print("For DaRio 2016 sample:", '%.2f'%(len(JHKclassIIDaR)/len(DaR2mHQ) * 100), "±", '%.2f'%(np.sqrt(len(JHKclassIIDaR))/len(DaR2mHQ) * 100), "%")
+print("For Kounkel 2016 sample:", '%.2f'%(len(JHKclassIIK)/len(K2mHQ) * 100), "±", '%.2f'%(np.sqrt(len(JHKclassIIK))/len(K2mHQ) * 100), "%")
 
 print("Class II percentage of sample for tight binary sample (WISE 1,2,3):",
 '%.2f'%(len(WclassIIt)/len(df[W1t.notnull() & W2t.notnull() & W3t.notnull()]) * 100), "±", 
