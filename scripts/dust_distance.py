@@ -14,6 +14,10 @@ W3_wl = 12 * u.micron
 W4_wl = 22 * u.micron
 Tdust = lambda wl: b_wien.cgs / wl.cgs
 Tstar = df.loc[:,'Teff'] * u.K
+W1 = df.loc[:,'W1']
+W2 = df.loc[:,'W2']
+W3 = df.loc[:,'W3']
+W4 = df.loc[:,'W4']
 # stars assumed to have radius ~ 2 * Rsol:
 d = lambda Ts, Td: (2 * R_sun.to(u.au)) / 2 * ((Ts/Td)**2)
 
@@ -27,6 +31,23 @@ plt.plot(Tstar, dW2,'o')
 plt.plot(Tstar, dW3,'o')
 plt.plot(Tstar, dW4,'o')
 plt.legend(['W1','W2','W3','W4'])
-plt.xlabel('Stellar Temperature')
-plt.ylabel('Distance of Emission')
+plt.xlabel('Stellar Temperature (K)')
+plt.ylabel('Distance of Emission (au)')
+plt.show()
+
+fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
+ax1.scatter(dW1,W1)
+ax2.scatter(dW2,W2)
+ax3.scatter(dW3,W3)
+ax4.scatter(dW4,W4)
+ax1.invert_yaxis()
+ax2.invert_yaxis()
+ax3.invert_yaxis()
+ax4.invert_yaxis()
+ax1.set_title('W1')
+ax2.set_title('W2')
+ax3.set_title('W3')
+ax4.set_title('W4')
+plt.xlabel('Distance of Emission (au)')
+plt.ylabel('Magnitude of Emission')
 plt.show()
