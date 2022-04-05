@@ -114,17 +114,25 @@ for i in range(len(df2)):
     distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
     mags = np.array([W1_2.loc[i], W2_2.loc[i], W3_2.loc[i], W4_2.loc[i]])
     plt.plot(distances, mags, c=sm.to_rgba(Tstar2.loc[i]))
-for i in range(len(DaRwHQ)):
-    distances = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
-    mags = np.array([W1DaR[i], W2DaR[i], W3DaR[i], W4DaR[i]])
-    plt.plot(distances, mags, 'g--', alpha=0.03)
-for i in range(len(KwHQ)):
-    distances = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
-    mags = np.array([W1K[i], W2K[i], W3K[i], W4K[i]])
-    plt.plot(distances, mags, 'g--', alpha=0.03)
+
+distancesDaR = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
+magsDaR = np.array([np.median(W1DaR), np.median(W2DaR), np.median(W3DaR), np.median(W4DaR)])
+plt.plot(distancesDaR, magsDaR, 'g-', alpha=0.4)
+
+distancesK = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
+magsK = np.array([np.median(W1K), np.median(W2K), np.median(W3K), np.median(W4K)])
+plt.plot(distancesK, magsK, 'b-', alpha=0.4)
 plt.colorbar(sm, label='Teff', orientation='vertical')
 plt.gca().invert_yaxis()
 plt.xlabel('Distance of Emission (au)')
 plt.ylabel('Magnitude of Emission')
 plt.show()
 
+# for i in range(len(DaRwHQ)):
+#     distances = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
+#     mags = np.array([W1DaR[i], W2DaR[i], W3DaR[i], W4DaR[i]])
+#     plt.plot(distances, mags, 'g--', alpha=0.03)
+# for i in range(len(KwHQ)):
+#     distances = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
+#     mags = np.array([W1K[i], W2K[i], W3K[i], W4K[i]])
+#     plt.plot(distances, mags, 'g--', alpha=0.03)
