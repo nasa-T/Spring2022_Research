@@ -129,42 +129,44 @@ norm = mpl.colors.Normalize(vmin=np.min(Tstar2), vmax=np.max(Tstar2))
 cmap = mpl.cm.autumn
 sm = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
 
-# fig, (ax1,ax2) = plt.subplots(2)
-# for i in range(len(df2)):
-#     distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
-#     fluxes = np.array([W1_2Fν.loc[i], W2_2Fν.loc[i],W3_2Fν.loc[i], W4_2Fν.loc[i]])
-#     ax1.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]))
+fig, ((ax1),(ax2)) = plt.subplots(1,2)
+for i in range(len(df2)):
+    distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
+    fluxes = np.array([W1_2Fν.loc[i], W2_2Fν.loc[i],W3_2Fν.loc[i], W4_2Fν.loc[i]])
+    ax1.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]))
 
-# distancesDaR = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
-# magsDaR = np.array([Fν(FνW1,np.median(W1DaR)), Fν(FνW2,np.median(W2DaR)), Fν(FνW3,np.median(W3DaR)), Fν(FνW4,np.median(W4DaR))])
-# ax1.plot(distancesDaR, magsDaR, 'g-', alpha=0.4)
+distancesDaR = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
+magsDaR = np.array([Fν(FνW1,np.median(W1DaR)), Fν(FνW2,np.median(W2DaR)), Fν(FνW3,np.median(W3DaR)), Fν(FνW4,np.median(W4DaR))])
+ax1.plot(distancesDaR, magsDaR, 'g-', alpha=0.4)
 
-# distancesK = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
-# magsK = np.array([Fν(FνW1,np.median(W1K)), Fν(FνW2,np.median(W2K)), Fν(FνW3,np.median(W3K)), Fν(FνW4,np.median(W4K))])
-# ax1.plot(distancesK, magsK, 'b-', alpha=0.4)
+distancesK = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
+magsK = np.array([Fν(FνW1,np.median(W1K)), Fν(FνW2,np.median(W2K)), Fν(FνW3,np.median(W3K)), Fν(FνW4,np.median(W4K))])
+ax1.plot(distancesK, magsK, 'b-', alpha=0.4)
 # plt.colorbar(sm, label='Teff', orientation='vertical')
-# # plt.gca().invert_yaxis()
-# # plt.xlabel('Distance of Emission (au)')
-# # plt.ylabel('Magnitude of Emission')
-# # plt.show()
-
-# for i in range(len(df2)):
-#     distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
-#     fluxes = np.array([W1_2Fλ.loc[i], W2_2Fλ.loc[i],W3_2Fλ.loc[i], W4_2Fλ.loc[i]])
-#     ax2.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]))
-
-# distancesDaR = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
-# magsDaR = np.array([Fλ(FλW1,np.median(W1DaR)), Fλ(FλW2,np.median(W2DaR)), Fλ(FλW3,np.median(W3DaR)), Fλ(FλW4,np.median(W4DaR))])
-# ax2.plot(distancesDaR, magsDaR, 'g-', alpha=0.4)
-
-# distancesK = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
-# magsK = np.array([Fλ(FλW1,np.median(W1K)), Fλ(FλW2,np.median(W2K)), Fλ(FλW3,np.median(W3K)), Fλ(FλW4,np.median(W4K))])
-# ax2.plot(distancesK, magsK, 'b-', alpha=0.4)
-# plt.colorbar(sm, label='Teff', orientation='vertical')
-# # plt.gca().invert_yaxis()
-# # plt.xlabel('Distance of Emission (au)')
-# # plt.ylabel('Magnitude of Emission')
+# plt.gca().invert_yaxis()
+plt.title('Light Curve of Disks')
+ax1.set_xlabel('Distance of Emission (au)')
+ax1.set_ylabel('Flux of Emission (Fν)')
 # plt.show()
+
+for i in range(len(df2)):
+    distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
+    fluxes = np.array([W1_2Fλ.loc[i], W2_2Fλ.loc[i],W3_2Fλ.loc[i], W4_2Fλ.loc[i]])
+    ax2.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]))
+
+distancesDaR = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
+magsDaR = np.array([Fλ(FλW1,np.median(W1DaR)), Fλ(FλW2,np.median(W2DaR)), Fλ(FλW3,np.median(W3DaR)), Fλ(FλW4,np.median(W4DaR))])
+ax2.plot(distancesDaR, magsDaR, 'g-', alpha=0.4)
+
+distancesK = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
+magsK = np.array([Fλ(FλW1,np.median(W1K)), Fλ(FλW2,np.median(W2K)), Fλ(FλW3,np.median(W3K)), Fλ(FλW4,np.median(W4K))])
+ax2.plot(distancesK, magsK, 'b-', alpha=0.4)
+plt.colorbar(sm, label='Teff', orientation='vertical')
+# plt.gca().invert_yaxis()
+plt.title('Light Curve of Disks')
+ax2.set_xlabel('Distance of Emission (au)')
+ax2.set_ylabel('Flux of Emission (Fλ)')
+plt.show()
 
 for i in range(len(df2)):
     distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
@@ -180,6 +182,7 @@ fluxesK = np.array([W1_freq.value*Fν(FνW1,np.median(W1K)), W2_freq.value*Fν(F
 plt.plot(distancesK, fluxesK, 'b-', alpha=0.4)
 plt.colorbar(sm, label='Teff', orientation='vertical')
 # plt.gca().invert_yaxis()
+plt.title('Light Curve of Disks')
 plt.xlabel('Distance of Emission (au)')
 plt.ylabel('Flux of Emission (νFν)')
 plt.show()
@@ -198,6 +201,7 @@ fluxesK = np.array([W1_wl.value*Fλ(FλW1,np.median(W1K)), W2_wl.value*Fλ(FλW2
 plt.plot(distancesK, fluxesK, 'b-', alpha=0.4)
 plt.colorbar(sm, label='Teff', orientation='vertical')
 # plt.gca().invert_yaxis()
+plt.title('Light Curve of Disks')
 plt.xlabel('Distance of Emission (au)')
 plt.ylabel('Flux of Emission (λFλ)')
 plt.show()
