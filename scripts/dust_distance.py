@@ -9,10 +9,10 @@ SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers2.csv'
 
 df = pd.read_csv(SOURCE)
 df = df.loc[:108] # non-data rows removed
-W1_wl = 3.4 * u.micron
-W2_wl = 4.6 * u.micron
-W3_wl = 12 * u.micron
-W4_wl = 22 * u.micron
+W1_wl = 3.3526 * u.micron
+W2_wl = 4.6028 * u.micron
+W3_wl = 11.5608 * u.micron
+W4_wl = 22.0883 * u.micron
 W1_freq = c.cgs.to(u.micron/u.s) / W1_wl
 W2_freq = c.cgs.to(u.micron/u.s) / W2_wl
 W3_freq = c.cgs.to(u.micron/u.s) / W3_wl
@@ -101,16 +101,25 @@ dKW4 = d(DaRioTemp,Tdust(W4_wl))
 # Making "profiles" of disks with all WISE bands
 # gather only objects with data from all WISE bands:
 Fν = lambda Fν0, m_vega: Fν0*10**(-m_vega/2.5)
+Fλ = lambda Fλ0, m_vega: Fλ0*10**(-m_vega/2.5)
 FνW1 = 306.682
 FνW2 = 170.663
 FνW3 = 29.045
 FνW4 = 8.284
+FλW1 = 8.1787E-15
+FλW2 = 2.4150E-15
+FλW3 = 6.5151E-17
+FλW4 = 5.0901E-18
 df2 = df[df.loc[:,'W1'].notnull() & df.loc[:,'W2'].notnull() & df.loc[:,'W3'].notnull() & df.loc[:,'W4'].notnull()].reset_index()
 Tstar2 = df2.loc[:,'Teff'] * u.K
-W1_2 = Fν(FνW1,df2.loc[:,'W1'])
-W2_2 = Fν(FνW2,df2.loc[:,'W2'])
-W3_2 = Fν(FνW3,df2.loc[:,'W3'])
-W4_2 = Fν(FνW4,df2.loc[:,'W4'])
+W1_2Fν = Fν(FνW1,df2.loc[:,'W1'])
+W2_2Fν = Fν(FνW2,df2.loc[:,'W2'])
+W3_2Fν = Fν(FνW3,df2.loc[:,'W3'])
+W4_2Fν = Fν(FνW4,df2.loc[:,'W4'])
+W1_2Fλ = Fλ(FλW1,df2.loc[:,'W1'])
+W2_2Fλ = Fλ(FλW2,df2.loc[:,'W2'])
+W3_2Fλ = Fλ(FλW3,df2.loc[:,'W3'])
+W4_2Fλ = Fλ(FλW4,df2.loc[:,'W4'])
 d2W1 = d(Tstar2,Tdust(W1_wl))
 d2W2 = d(Tstar2,Tdust(W2_wl))
 d2W3 = d(Tstar2,Tdust(W3_wl))
@@ -119,22 +128,78 @@ d2W4 = d(Tstar2,Tdust(W4_wl))
 norm = mpl.colors.Normalize(vmin=np.min(Tstar2), vmax=np.max(Tstar2))
 cmap = mpl.cm.autumn
 sm = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
+
+# fig, (ax1,ax2) = plt.subplots(2)
+# for i in range(len(df2)):
+#     distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
+#     fluxes = np.array([W1_2Fν.loc[i], W2_2Fν.loc[i],W3_2Fν.loc[i], W4_2Fν.loc[i]])
+#     ax1.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]))
+
+# distancesDaR = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
+# magsDaR = np.array([Fν(FνW1,np.median(W1DaR)), Fν(FνW2,np.median(W2DaR)), Fν(FνW3,np.median(W3DaR)), Fν(FνW4,np.median(W4DaR))])
+# ax1.plot(distancesDaR, magsDaR, 'g-', alpha=0.4)
+
+# distancesK = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
+# magsK = np.array([Fν(FνW1,np.median(W1K)), Fν(FνW2,np.median(W2K)), Fν(FνW3,np.median(W3K)), Fν(FνW4,np.median(W4K))])
+# ax1.plot(distancesK, magsK, 'b-', alpha=0.4)
+# plt.colorbar(sm, label='Teff', orientation='vertical')
+# # plt.gca().invert_yaxis()
+# # plt.xlabel('Distance of Emission (au)')
+# # plt.ylabel('Magnitude of Emission')
+# # plt.show()
+
+# for i in range(len(df2)):
+#     distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
+#     fluxes = np.array([W1_2Fλ.loc[i], W2_2Fλ.loc[i],W3_2Fλ.loc[i], W4_2Fλ.loc[i]])
+#     ax2.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]))
+
+# distancesDaR = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
+# magsDaR = np.array([Fλ(FλW1,np.median(W1DaR)), Fλ(FλW2,np.median(W2DaR)), Fλ(FλW3,np.median(W3DaR)), Fλ(FλW4,np.median(W4DaR))])
+# ax2.plot(distancesDaR, magsDaR, 'g-', alpha=0.4)
+
+# distancesK = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
+# magsK = np.array([Fλ(FλW1,np.median(W1K)), Fλ(FλW2,np.median(W2K)), Fλ(FλW3,np.median(W3K)), Fλ(FλW4,np.median(W4K))])
+# ax2.plot(distancesK, magsK, 'b-', alpha=0.4)
+# plt.colorbar(sm, label='Teff', orientation='vertical')
+# # plt.gca().invert_yaxis()
+# # plt.xlabel('Distance of Emission (au)')
+# # plt.ylabel('Magnitude of Emission')
+# plt.show()
+
 for i in range(len(df2)):
     distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
-    fluxes = np.array([W1_freq.value*W1_2.loc[i], W2_freq.value*W2_2.loc[i],W3_freq.value*W3_2.loc[i], W4_freq.value*W4_2.loc[i]])
+    fluxes = np.array([W1_freq.value*W1_2Fν.loc[i], W2_freq.value*W2_2Fν.loc[i],W3_freq.value*W3_2Fν.loc[i], W4_freq.value*W4_2Fν.loc[i]])
     plt.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]))
 
 distancesDaR = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
-magsDaR = np.array([W1_freq.value*Fν(FνW1,np.median(W1DaR)), W2_freq.value*Fν(FνW2,np.median(W2DaR)), W3_freq.value*Fν(FνW3,np.median(W3DaR)), W4_freq.value*Fν(FνW4,np.median(W4DaR))])
-plt.plot(distancesDaR, magsDaR, 'g-', alpha=0.4)
+fluxesDaR = np.array([W1_freq.value*Fν(FνW1,np.median(W1DaR)), W2_freq.value*Fν(FνW2,np.median(W2DaR)), W3_freq.value*Fν(FνW3,np.median(W3DaR)), W4_freq.value*Fν(FνW4,np.median(W4DaR))])
+plt.plot(distancesDaR, fluxesDaR, 'g-', alpha=0.4)
 
 distancesK = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
-magsK = np.array([W1_freq.value*Fν(FνW1,np.median(W1K)), W2_freq.value*Fν(FνW2,np.median(W2K)), W3_freq.value*Fν(FνW3,np.median(W3K)), W4_freq.value*Fν(FνW4,np.median(W4K))])
-plt.plot(distancesK, magsK, 'b-', alpha=0.4)
+fluxesK = np.array([W1_freq.value*Fν(FνW1,np.median(W1K)), W2_freq.value*Fν(FνW2,np.median(W2K)), W3_freq.value*Fν(FνW3,np.median(W3K)), W4_freq.value*Fν(FνW4,np.median(W4K))])
+plt.plot(distancesK, fluxesK, 'b-', alpha=0.4)
 plt.colorbar(sm, label='Teff', orientation='vertical')
 # plt.gca().invert_yaxis()
 plt.xlabel('Distance of Emission (au)')
-plt.ylabel('Magnitude of Emission')
+plt.ylabel('Flux of Emission (νFν)')
+plt.show()
+
+for i in range(len(df2)):
+    distances = np.array([d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
+    fluxes = np.array([W1_wl.value*W1_2Fλ.loc[i], W2_wl.value*W2_2Fλ.loc[i],W3_wl.value*W3_2Fλ.loc[i], W4_wl.value*W4_2Fλ.loc[i]])
+    plt.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]))
+
+distancesDaR = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
+fluxesDaR = np.array([W1_wl.value*Fλ(FλW1,np.median(W1DaR)), W2_wl.value*Fλ(FλW2,np.median(W2DaR)), W3_wl.value*Fλ(FλW3,np.median(W3DaR)), W4_wl.value*Fλ(FλW4,np.median(W4DaR))])
+plt.plot(distancesDaR, fluxesDaR, 'g-', alpha=0.4)
+
+distancesK = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
+fluxesK = np.array([W1_wl.value*Fλ(FλW1,np.median(W1K)), W2_wl.value*Fλ(FλW2,np.median(W2K)), W3_wl.value*Fλ(FλW3,np.median(W3K)), W4_wl.value*Fλ(FλW4,np.median(W4K))])
+plt.plot(distancesK, fluxesK, 'b-', alpha=0.4)
+plt.colorbar(sm, label='Teff', orientation='vertical')
+# plt.gca().invert_yaxis()
+plt.xlabel('Distance of Emission (au)')
+plt.ylabel('Flux of Emission (λFλ)')
 plt.show()
 
 # for i in range(len(DaRwHQ)):
