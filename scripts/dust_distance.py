@@ -175,18 +175,22 @@ plt.xscale('log')
 
 for i in range(len(df2)):
     distances = np.array([dJ.loc[i], dH.loc[i], dK.loc[i], d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
-    fluxes = np.array([J_freq.value*J_2Fν.loc[i], H_freq.value*H_2Fν.loc[i], K_freq.value*K_2Fν.loc[i], W1_freq.value*W1_2Fν.loc[i], W2_freq.value*W2_2Fν.loc[i],W3_freq.value*W3_2Fν.loc[i], W4_freq.value*W4_2Fν.loc[i]])/(J_freq.value*J_2Fν.loc[i])
-    plt.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]))
+    fluxes = np.log(np.array([J_freq.value*J_2Fν.loc[i], H_freq.value*H_2Fν.loc[i], K_freq.value*K_2Fν.loc[i], W1_freq.value*W1_2Fν.loc[i], W2_freq.value*W2_2Fν.loc[i],W3_freq.value*W3_2Fν.loc[i], W4_freq.value*W4_2Fν.loc[i]])/(J_freq.value*J_2Fν.loc[i]))
+    if df2.loc[i,'Disk Mass err'] != -10:
+        plt.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]), label='Detection')
+    else:
+        plt.plot(distances, fluxes, '--', c=sm.to_rgba(Tstar2.loc[i]), label='Non-Detection')
+
 
 distancesDaR = np.array([dDaRJ.value, dDaRH.value, dDaRK.value, dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
-fluxesDaR = np.array([J_freq.value*Fν(FνJ,np.median(JDaR)), H_freq.value*Fν(FνH,np.median(HDaR)), K_freq.value*Fν(FνK,np.median(KDaR)), W1_freq.value*Fν(FνW1,np.median(W1DaR)), W2_freq.value*Fν(FνW2,np.median(W2DaR)), W3_freq.value*Fν(FνW3,np.median(W3DaR)), W4_freq.value*Fν(FνW4,np.median(W4DaR))])/(J_freq.value*Fν(FνJ,np.median(JDaR)))
-fDaRstDev = np.sqrt(fluxesDaR)
+fluxesDaR = np.log(np.array([J_freq.value*Fν(FνJ,np.median(JDaR)), H_freq.value*Fν(FνH,np.median(HDaR)), K_freq.value*Fν(FνK,np.median(KDaR)), W1_freq.value*Fν(FνW1,np.median(W1DaR)), W2_freq.value*Fν(FνW2,np.median(W2DaR)), W3_freq.value*Fν(FνW3,np.median(W3DaR)), W4_freq.value*Fν(FνW4,np.median(W4DaR))])/(J_freq.value*Fν(FνJ,np.median(JDaR))))
+fDaRstDev = np.sqrt(np.abs(fluxesDaR))
 plt.plot(distancesDaR, fluxesDaR, 'g--', alpha=0.4, linewidth=5)
 plt.fill_between(distancesDaR,fluxesDaR-fDaRstDev,fluxesDaR+fDaRstDev,alpha=0.2)
 
 distancesK = np.array([dKJ.value, dKH.value, dKK.value, dKW1.value, dKW2.value, dKW3.value, dKW4.value])
-fluxesK = np.array([J_freq.value*Fν(FνJ,np.median(JK)), H_freq.value*Fν(FνH,np.median(HK)), K_freq.value*Fν(FνK,np.median(KK)), W1_freq.value*Fν(FνW1,np.median(W1K)), W2_freq.value*Fν(FνW2,np.median(W2K)), W3_freq.value*Fν(FνW3,np.median(W3K)), W4_freq.value*Fν(FνW4,np.median(W4K))])/(J_freq.value*Fν(FνJ,np.median(JK)))
-fKstDev = np.sqrt(fluxesK)
+fluxesK = np.log(np.array([J_freq.value*Fν(FνJ,np.median(JK)), H_freq.value*Fν(FνH,np.median(HK)), K_freq.value*Fν(FνK,np.median(KK)), W1_freq.value*Fν(FνW1,np.median(W1K)), W2_freq.value*Fν(FνW2,np.median(W2K)), W3_freq.value*Fν(FνW3,np.median(W3K)), W4_freq.value*Fν(FνW4,np.median(W4K))])/(J_freq.value*Fν(FνJ,np.median(JK))))
+fKstDev = np.sqrt(np.abs(fluxesK))
 print(fKstDev)
 plt.plot(distancesK, fluxesK, 'b--', alpha=0.4, linewidth=5)
 plt.fill_between(distancesK,fluxesK-fKstDev,fluxesK+fKstDev,alpha=0.2)
@@ -194,7 +198,14 @@ plt.colorbar(sm, label='Teff', orientation='vertical')
 # plt.gca().invert_yaxis()
 plt.title('Light Curve of Disks')
 plt.xlabel('Distance of Emission (au)')
-plt.ylabel('Flux of Emission (νFν) / (νFν)J')
+plt.ylabel('Flux of Emission log( (νFν) / (νFν)J )')
+
+import matplotlib.lines as mlines
+legendLine1 = mlines.Line2D([], [], color='black', linestyle='-', label='Detections')
+legendLine2 = mlines.Line2D([], [], color='black', linestyle='--', label='Non-Detections')
+# print(legendLine1)
+# plt.legend(handles=legendLine1)
+plt.legend([legendLine1,legendLine2],['Detections','Non-Detections'])
 plt.show()
 
 # for i in range(len(DaRwHQ)):
