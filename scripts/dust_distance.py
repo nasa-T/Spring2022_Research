@@ -175,25 +175,36 @@ plt.xscale('log')
 
 for i in range(len(df2)):
     distances = np.array([dJ.loc[i], dH.loc[i], dK.loc[i], d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
-    fluxes = np.log(np.array([J_freq.value*J_2Fν.loc[i], H_freq.value*H_2Fν.loc[i], K_freq.value*K_2Fν.loc[i], W1_freq.value*W1_2Fν.loc[i], W2_freq.value*W2_2Fν.loc[i],W3_freq.value*W3_2Fν.loc[i], W4_freq.value*W4_2Fν.loc[i]])/(J_freq.value*J_2Fν.loc[i]))
+    fluxes = np.log10(np.array([J_freq.value*J_2Fν.loc[i], H_freq.value*H_2Fν.loc[i], K_freq.value*K_2Fν.loc[i], W1_freq.value*W1_2Fν.loc[i], W2_freq.value*W2_2Fν.loc[i],W3_freq.value*W3_2Fν.loc[i], W4_freq.value*W4_2Fν.loc[i]])/(J_freq.value*J_2Fν.loc[i]))
+    plt.text(distances[-1],fluxes[-1],df2.loc[i,'Disk Mass (Mjup)'])
     if df2.loc[i,'Disk Mass err'] != -10:
         plt.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]), label='Detection')
+        
     else:
         plt.plot(distances, fluxes, '--', c=sm.to_rgba(Tstar2.loc[i]), label='Non-Detection')
 
-
 distancesDaR = np.array([dDaRJ.value, dDaRH.value, dDaRK.value, dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
-fluxesDaR = np.log(np.array([J_freq.value*Fν(FνJ,np.median(JDaR)), H_freq.value*Fν(FνH,np.median(HDaR)), K_freq.value*Fν(FνK,np.median(KDaR)), W1_freq.value*Fν(FνW1,np.median(W1DaR)), W2_freq.value*Fν(FνW2,np.median(W2DaR)), W3_freq.value*Fν(FνW3,np.median(W3DaR)), W4_freq.value*Fν(FνW4,np.median(W4DaR))])/(J_freq.value*Fν(FνJ,np.median(JDaR))))
+fluxesDaR = np.log10(np.array([J_freq.value*Fν(FνJ,np.median(JDaR)), H_freq.value*Fν(FνH,np.median(HDaR)), K_freq.value*Fν(FνK,np.median(KDaR)), W1_freq.value*Fν(FνW1,np.median(W1DaR)), W2_freq.value*Fν(FνW2,np.median(W2DaR)), W3_freq.value*Fν(FνW3,np.median(W3DaR)), W4_freq.value*Fν(FνW4,np.median(W4DaR))])/(J_freq.value*Fν(FνJ,np.median(JDaR))))
 fDaRstDev = np.sqrt(np.abs(fluxesDaR))
 plt.plot(distancesDaR, fluxesDaR, 'g--', alpha=0.4, linewidth=5)
 plt.fill_between(distancesDaR,fluxesDaR-fDaRstDev,fluxesDaR+fDaRstDev,alpha=0.2)
 
 distancesK = np.array([dKJ.value, dKH.value, dKK.value, dKW1.value, dKW2.value, dKW3.value, dKW4.value])
-fluxesK = np.log(np.array([J_freq.value*Fν(FνJ,np.median(JK)), H_freq.value*Fν(FνH,np.median(HK)), K_freq.value*Fν(FνK,np.median(KK)), W1_freq.value*Fν(FνW1,np.median(W1K)), W2_freq.value*Fν(FνW2,np.median(W2K)), W3_freq.value*Fν(FνW3,np.median(W3K)), W4_freq.value*Fν(FνW4,np.median(W4K))])/(J_freq.value*Fν(FνJ,np.median(JK))))
+fluxesK = np.log10(np.array([J_freq.value*Fν(FνJ,np.median(JK)), H_freq.value*Fν(FνH,np.median(HK)), K_freq.value*Fν(FνK,np.median(KK)), W1_freq.value*Fν(FνW1,np.median(W1K)), W2_freq.value*Fν(FνW2,np.median(W2K)), W3_freq.value*Fν(FνW3,np.median(W3K)), W4_freq.value*Fν(FνW4,np.median(W4K))])/(J_freq.value*Fν(FνJ,np.median(JK))))
 fKstDev = np.sqrt(np.abs(fluxesK))
-print(fKstDev)
 plt.plot(distancesK, fluxesK, 'b--', alpha=0.4, linewidth=5)
 plt.fill_between(distancesK,fluxesK-fKstDev,fluxesK+fKstDev,alpha=0.2)
+
+# for i in range(len(DaR)):
+#     distances = np.array([dDaRJ.value, dDaRH.value, dDaRK.value, dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
+#     mags = np.log10(np.array([J_freq.value*Fν(FνJ,JDaR[i]), H_freq.value*Fν(FνH,HDaR[i]), K_freq.value*Fν(FνK,KDaR[i]), W1_freq.value*Fν(FνW1,W1DaR[i]), W2_freq.value*Fν(FνW2,W2DaR[i]), W3_freq.value*Fν(FνW3,W3DaR[i]), W4_freq.value*Fν(FνW4,W4DaR[i])])/(J_freq.value*Fν(FνJ,JDaR[i])))
+#     plt.plot(distances, mags, 'g--', alpha=0.03)
+
+# for i in range(len(K)):
+#     distances = np.array([dKJ.value, dKH.value, dKK.value, dKW1.value, dKW2.value, dKW3.value, dKW4.value])
+#     mags = np.log10(np.array([J_freq.value*Fν(FνJ,JK[i]), H_freq.value*Fν(FνH,HK[i]), K_freq.value*Fν(FνK,KK[i]), W1_freq.value*Fν(FνW1,W1K[i]), W2_freq.value*Fν(FνW2,W2K[i]), W3_freq.value*Fν(FνW3,W3K[i]), W4_freq.value*Fν(FνW4,W4K[i])])/(J_freq.value*Fν(FνJ,JK[i])))
+#     plt.plot(distances, mags, 'g--', alpha=0.03)
+
 plt.colorbar(sm, label='Teff', orientation='vertical')
 # plt.gca().invert_yaxis()
 plt.title('Light Curve of Disks')
@@ -208,11 +219,4 @@ legendLine2 = mlines.Line2D([], [], color='black', linestyle='--', label='Non-De
 plt.legend([legendLine1,legendLine2],['Detections','Non-Detections'])
 plt.show()
 
-# for i in range(len(DaRwHQ)):
-#     distances = np.array([dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
-#     mags = np.array([W1DaR[i], W2DaR[i], W3DaR[i], W4DaR[i]])
-#     plt.plot(distances, mags, 'g--', alpha=0.03)
-# for i in range(len(KwHQ)):
-#     distances = np.array([dKW1.value, dKW2.value, dKW3.value, dKW4.value])
-#     mags = np.array([W1K[i], W2K[i], W3K[i], W4K[i]])
-#     plt.plot(distances, mags, 'g--', alpha=0.03)
+
