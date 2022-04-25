@@ -7,7 +7,9 @@ SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers2.csv'
 
 df = pd.read_csv(SOURCE)
 df = df.loc[:108] # non-data rows removed
-# JHK data for tight-binaries
+df2 = df[df['Disk Mass err']!=-10]
+df3 = df[df['Disk Mass err']==-10]
+# JHK+WISE data for tight-binaries
 Jt = df.loc[:,'J']
 Ht = df.loc[:,'H']
 Kt = df.loc[:,'K']
@@ -15,7 +17,20 @@ W1t = df.loc[:,'W1']
 W2t = df.loc[:,'W2']
 W3t = df.loc[:,'W3']
 W4t = df.loc[:,'W4']
-
+Jt2 = df2.loc[:,'J']
+Ht2 = df2.loc[:,'H']
+Kt2 = df2.loc[:,'K']
+W1t2 = df2.loc[:,'W1']
+W2t2 = df2.loc[:,'W2']
+W3t2 = df2.loc[:,'W3']
+W4t2 = df2.loc[:,'W4']
+Jt3 = df3.loc[:,'J']
+Ht3 = df3.loc[:,'H']
+Kt3 = df3.loc[:,'K']
+W1t3 = df3.loc[:,'W1']
+W2t3 = df3.loc[:,'W2']
+W3t3 = df3.loc[:,'W3']
+W4t3 = df3.loc[:,'W4']
 # Reading in non-tight-binary data
 from astropy.io import ascii
 FOLDER = '/Users/Celloman/Research/Spring2022_Research/infrareddata/'
@@ -44,6 +59,12 @@ W12K = KwHQ['w1mpro']-KwHQ['w2mpro']
 W34t = W3t-W4t
 W23t = W2t-W3t
 W12t = W1t-W2t
+W34t2 = W3t2-W4t2
+W23t2 = W2t2-W3t2
+W12t2 = W1t2-W2t2
+W34t3 = W3t3-W4t3
+W23t3 = W2t3-W3t3
+W12t3 = W1t3-W2t3
 
 # CTTS locus equation:
 j_h = lambda h, k: 0.58 * (h-k) + 0.52
@@ -89,10 +110,11 @@ print("For Kounkel 2016 sample:", '%.2f'%(len(WclassIIK)/len(KwHQ) * 100), "±",
 fig, (ax1, ax2, ax3) = plt.subplots(1, 3)
 
 # Plot non-tight-binary data:
-ax1.plot(DaR2mHQ['h_k'], DaR2mHQ['j_h'], 'ro', markersize=0.5)
-ax1.plot(K2mHQ['h_k'], K2mHQ['j_h'], 'ko', markersize=0.5)
+ax1.plot(DaR2mHQ['h_k'], DaR2mHQ['j_h'], 'o', markersize=0.5)
+ax1.plot(K2mHQ['h_k'], K2mHQ['j_h'], 'o', markersize=0.5)
 # Plot tight-binary data:
-ax1.plot(Ht-Kt, Jt-Ht, 'o', markersize=4)
+ax1.plot(Ht2-Kt2, Jt2-Ht2, 'go', markersize=4)
+ax1.plot(Ht3-Kt3, Jt3-Ht3, 'rx', markersize=4)
 # Plot CTTS locus:
 ax1.plot(Ht-Kt, j_h(Ht,Kt), 'k-')
 # Plot MS curve:
@@ -103,15 +125,16 @@ x2 = np.linspace(0.618/1.25,2.25,2)
 # c values found from Robberto et al. (2010):
 # plt.plot(x1, ISR_vector(x1, -0.5),'k-') 
 ax1.plot(x2, ISR_vector(x2, -0.098),'k-')
-ax1.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
+ax1.legend(['DaRio2016', 'Kounkel2016', 'Detections', 'Non-Detections'])
 ax1.set_xlabel('H-K')
 ax1.set_ylabel('J-H')
 
 # Plot W1-W2 vs. W2-W3:
 ax2.plot(W23DaR, W12DaR,'o', markersize=0.5)
 ax2.plot(W23K, W12K,'o', markersize=0.5)
-ax2.plot(W23t, W12t, 'o', markersize=4)
-ax2.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
+ax2.plot(W23t2, W12t2, 'o', markersize=4)
+ax2.plot(W23t3, W12t3, 'x', markersize=4)
+ax2.legend(['DaRio2016', 'Kounkel2016', 'Detections', 'Non-Detections'])
 # Plot boundaries found in Fischer et al. (2016):
 ax2.plot(np.ones(10)*2.0, np.linspace(1.3,3.5,10), 'k-')
 ax2.plot(np.ones(10)*4.5, np.linspace(1.15,3.5,10), 'k-')
@@ -128,8 +151,9 @@ ax2.set_ylabel('W1-W2')
 # Plot W1-W2 vs. W3-W4:
 ax3.plot(W34DaR, W12DaR,'o', markersize=0.5)
 ax3.plot(W34K, W12K,'o', markersize=0.5)
-ax3.plot(W34t, W12t, 'o', markersize=4)
-ax3.legend(['DaRio2016', 'Kounkel2016', 'Tight-Binaries'])
+ax3.plot(W34t2, W12t2, 'o', markersize=4)
+ax3.plot(W34t3, W12t3, 'x', markersize=4)
+ax3.legend(['DaRio2016', 'Kounkel2016', 'Detections', 'Non-Detections'])
 ax3.set_xlabel('W3-W4')
 ax3.set_ylabel('W1-W2')
 
