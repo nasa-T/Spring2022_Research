@@ -13,8 +13,7 @@ W3 = df.loc[:,'W3']
 W4 = df.loc[:,'W4']
 fig, ax = plt.subplots(2,2)
 def barPlotting(dataset,wiseBand):
-    """Takes dataset (Pandas dataframe) and wiseBand of interest (string) and returns quantities of each category
-    bar graphs representing combinations of present data"""
+    """Takes dataset (Pandas dataframe) and wiseBand of interest (string) and returns quantities of each category"""
     detected = dataset[dataset.loc[:,'Disk Mass err']!=-10]
     non_detected = dataset[dataset.loc[:,'Disk Mass err']==-10]
     # Create different categories for combinations of WISE and ALMA data
@@ -24,10 +23,6 @@ def barPlotting(dataset,wiseBand):
     noWnoA = non_detected[non_detected.loc[:,wiseBand].isna()]
     heights = np.array([len(both),len(WnoA),len(AnoW),len(noWnoA)])
     return heights
-    plt.bar(['both','WISE no ALMA', 'ALMA no WISE', 'No Data'], heights)
-    
-    
-    plt.show()
 
 heights1 = barPlotting(df,'W1')
 heights2 = barPlotting(df,'W2')
