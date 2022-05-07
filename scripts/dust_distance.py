@@ -16,19 +16,27 @@ W1_wl = 3.3526 * u.micron
 W2_wl = 4.6028 * u.micron
 W3_wl = 11.5608 * u.micron
 W4_wl = 22.0883 * u.micron
+# wavelength of each band
+wls = np.array([ 1.235, 1.662, 2.159, 3.3526, 4.6028, 11.5608, 22.0883 ]) * u.micron
 J_freq = c.cgs.to(u.micron/u.s) / J_wl
-H_freq = c.cgs.to(u.micron/u.s) / J_wl
-K_freq = c.cgs.to(u.micron/u.s) / J_wl
+H_freq = c.cgs.to(u.micron/u.s) / H_wl
+K_freq = c.cgs.to(u.micron/u.s) / K_wl
 W1_freq = c.cgs.to(u.micron/u.s) / W1_wl
 W2_freq = c.cgs.to(u.micron/u.s) / W2_wl
 W3_freq = c.cgs.to(u.micron/u.s) / W3_wl
 W4_freq = c.cgs.to(u.micron/u.s) / W4_wl
+# frequency of each band
+freqs = c.cgs.to(u.micron/u.s) / wls
+# dust temperature using Wien's law
 Tdust = lambda wl: b_wien.cgs / wl.cgs
 Tstar = df.loc[:,'Teff'] * u.K
 W1 = df.loc[:,'W1']
 W2 = df.loc[:,'W2']
 W3 = df.loc[:,'W3']
 W4 = df.loc[:,'W4']
+# magnitudes of bands in tight binary data
+tMags = np.array([ df.loc[:,'J'], df.loc[:,'H'], df.loc[:,'K'], df.loc[:,'W1'], 
+                df.loc[:,'W2'], df.loc[:,'W3'], df.loc[:,'W4'] ])
 # stars assumed to have radius ~ 2 * Rsol:
 d = lambda Ts, Td: (2 * R_sun.to(u.au)) / 2 * ((Ts/Td)**2)
 
@@ -40,40 +48,49 @@ dW2 = d(Tstar,Tdust(W2_wl))
 dW3 = d(Tstar,Tdust(W3_wl))
 dW4 = d(Tstar,Tdust(W4_wl))
 
-plt.plot(Tstar, dJ, 'o')
-plt.plot(Tstar, dH, 'o')
-plt.plot(Tstar, dK, 'o')
-plt.plot(Tstar, dW1, 'o')
-plt.plot(Tstar, dW2,'o')
-plt.plot(Tstar, dW3,'o')
-plt.plot(Tstar, dW4,'o')
-plt.legend(['J','H','K','W1','W2','W3','W4'])
-plt.xlabel('Stellar Temperature (K)')
-plt.ylabel('Distance of Emission (au)')
-plt.show()
+dists = np.empty(7) * u.AU # initialize 2D array for distances
+for i in range(len(df)):
+    # add rows to array: each row is an object with distances for each wl
+    dists = np.vstack( [dists, d(Tstar[i], Tdust(wls))] ) 
+dists = np.delete(dists, 0, axis=0) # delete initializer row
 
-fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
-ax1.scatter(dW1,W1)
-ax2.scatter(dW2,W2)
-ax3.scatter(dW3,W3)
-ax4.scatter(dW4,W4)
-ax1.invert_yaxis()
-ax2.invert_yaxis()
-ax3.invert_yaxis()
-ax4.invert_yaxis()
-ax1.set_title('W1')
-ax2.set_title('W2')
-ax3.set_title('W3')
-ax4.set_title('W4')
-ax1.set_xlabel('Distance of Emission (au)')
-ax1.set_ylabel('Magnitude of Emission')
-ax2.set_xlabel('Distance of Emission (au)')
-ax2.set_ylabel('Magnitude of Emission')
-ax3.set_xlabel('Distance of Emission (au)')
-ax3.set_ylabel('Magnitude of Emission')
-ax4.set_xlabel('Distance of Emission (au)')
-ax4.set_ylabel('Magnitude of Emission')
-plt.show()
+# for i in range(7):
+#     plt.plot(Tstar, dists[:,i],'o')
+# # plt.plot(Tstar, dJ, 'o')
+# # plt.plot(Tstar, dH, 'o')
+# # plt.plot(Tstar, dK, 'o')
+# # plt.plot(Tstar, dW1, 'o')
+# # plt.plot(Tstar, dW2,'o')
+# # plt.plot(Tstar, dW3,'o')
+# # plt.plot(Tstar, dW4,'o')
+# plt.legend(['J','H','K','W1','W2','W3','W4'])
+# plt.xlabel('Stellar Temperature (K)')
+# plt.ylabel('Distance of Emission (au)')
+# plt.show()
+
+# fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
+# # plot distribution of WISE magnitudes vs. distances
+# ax1.scatter(dists[:,3],tMags[3])
+# ax2.scatter(dists[:,4],tMags[4])
+# ax3.scatter(dists[:,5],tMags[5])
+# ax4.scatter(dists[:,6],tMags[6])
+# ax1.invert_yaxis()
+# ax2.invert_yaxis()
+# ax3.invert_yaxis()
+# ax4.invert_yaxis()
+# ax1.set_title('W1')
+# ax2.set_title('W2')
+# ax3.set_title('W3')
+# ax4.set_title('W4')
+# ax1.set_xlabel('Distance of Emission (au)')
+# ax1.set_ylabel('Magnitude of Emission')
+# ax2.set_xlabel('Distance of Emission (au)')
+# ax2.set_ylabel('Magnitude of Emission')
+# ax3.set_xlabel('Distance of Emission (au)')
+# ax3.set_ylabel('Magnitude of Emission')
+# ax4.set_xlabel('Distance of Emission (au)')
+# ax4.set_ylabel('Magnitude of Emission')
+# plt.show()
 
 # Reading in non-tight-binary WISE data
 from astropy.io import ascii
@@ -146,7 +163,21 @@ FλW1 = 8.1787E-15
 FλW2 = 2.4150E-15
 FλW3 = 6.5151E-17
 FλW4 = 5.0901E-18
+Fν0s = np.array([1594, 1024, 66.7, 306.682, 170.663, 29.045, 8.284])
 df2 = df[df.loc[:,'W1'].notnull() & df.loc[:,'W2'].notnull() & df.loc[:,'W3'].notnull() & df.loc[:,'W4'].notnull()].reset_index()
+# magnitudes of bands in tight binary data
+tMags2 = np.array([ df2.loc[:,'J'], df2.loc[:,'H'], df2.loc[:,'K'], 
+                    df2.loc[:,'W1'], df2.loc[:,'W2'], df2.loc[:,'W3'], 
+                    df2.loc[:,'W4'] ])
+# tMags2 = np.empty(7) * u.AU # initialize 2D array for distances
+tMags2 = np.swapaxes(tMags2,0,1)
+# print(tMags2[:][:2])
+tFluxes = np.empty(7)
+for i in range(5):
+    # add rows to array: each row is an object with distances for each wl
+    tFluxes = np.vstack( [tFluxes, Fν(Fν0s, tMags2[:][i])] ) 
+tFluxes = np.delete(tFluxes, 0, axis=0) # delete initializer row
+# print(tFluxes[:2])
 Tstar2 = df2.loc[:,'Teff'] * u.K
 J_2Fν = Fν(FνJ,df2.loc[:,'J'])
 H_2Fν = Fν(FνH,df2.loc[:,'H'])
@@ -166,6 +197,12 @@ d2W1 = d(Tstar2,Tdust(W1_wl))
 d2W2 = d(Tstar2,Tdust(W2_wl))
 d2W3 = d(Tstar2,Tdust(W3_wl))
 d2W4 = d(Tstar2,Tdust(W4_wl))
+dists2 = np.empty(7) * u.AU # initialize 2D array for distances
+for i in range(len(df2)):
+    # add rows to array: each row is an object with with distances for each wl
+    dists2 = np.vstack( [dists2, d(Tstar2[i], Tdust(wls))] ) 
+dists2 = np.delete(dists, 0, axis=0) # delete initializer row
+
 
 norm = mpl.colors.Normalize(vmin=np.min(Tstar2), vmax=np.max(Tstar2))
 cmap = mpl.cm.autumn

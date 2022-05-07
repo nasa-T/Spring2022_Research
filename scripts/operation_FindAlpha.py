@@ -15,13 +15,13 @@ def rndm(a, b, g, size=1):
     ag, bg = a**g, b**g
     return (ag + (bg - ag)*r)**(1./g)
 F0 = min(df[detected].loc[:,'Flux (Jy)']) # flux of lowest detection for censoring
-n = 9 # when changing this, check dimensions of subplots
-α_range = np.linspace(-1.2,-1.05, n) # range of α values in question
+n = 6 # when changing this, check dimensions of subplots
+α_range = np.linspace(-2,-0.05, n) # range of α values in question
 kmf = KaplanMeierFitter()
 for i in range(1,n+1):
 # for α in α_range:
     α = round(α_range[i-1],2)
-    ax = plt.subplot(3,3,i)
+    ax = plt.subplot(3,2,i)
     # making a plot for each α value giving a false sample (based on power-law)
     false_sample = rndm(min(flux), max(flux), g=α+1, size=len(df)) 
     false_detected = false_sample > F0
@@ -30,6 +30,5 @@ for i in range(1,n+1):
     kmf.fit(flux, detected, label='Actual Data')
     kmf.plot_cumulative_density(ax=ax)
     ax.set_xlabel('Flux (Jy)')
-
 plt.show()
 
