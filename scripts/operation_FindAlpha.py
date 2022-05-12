@@ -18,7 +18,7 @@ def rndm(a, b, g, size=1):
 F0 = np.sort(df.loc[:,'Flux_err']*5) 
 repetitions = 9
 α_range = np.linspace(-2,-0.05, repetitions) # range of α values in question
-def fake_v_realSample(realFlux,realDetected,fakeFlux,fakeDetected, axis,alpha='Fake Data'):
+def fake_v_realSample(realFlux,realDetected,fakeFlux,fakeDetected, axis,alpha):
     kmf = KaplanMeierFitter()
     kmf.fit(fakeFlux, fakeDetected, label='α = ' +str(alpha))
     kmf.plot_cumulative_density(ax=axis)
@@ -35,18 +35,29 @@ def closestFactorPair(num):
     while (num % a) != 0:
         a += 1
     return (a, num//a)
-def findingAlpha(alphaRange,n=6):
+def findingAlpha(alphaRange):
+    n = len(alphaRange)
     for i in range(1,n+1):
-        α = round(α_range[i-1],2)
+        α = round(alphaRange[i-1],2)
         a, b = closestFactorPair(n)
         ax = plt.subplot(a,b,i)
         false_sample = np.sort(rndm(min(flux), max(flux), g=α+1, size=len(df)))
         false_detected = false_sample > F0
-        fake_v_realSample(flux,detected,false_sample,false_detected,ax, alpha=α)
+        fake_v_realSample(flux,detected,false_sample,false_detected,ax, α)
     plt.show()
-findingAlpha(α_range,repetitions)
+findingAlpha(α_range)
 # use randomized order for fake detection mask
-
+def randomDetectionMask(α=-1.1,n=6):
+    false_sample = np.sort(rndm(min(flux), max(flux), g=α+1, size=len(df)))
+    for i in range(1,n+1): 
+        a, b = closestFactorPair(n)
+        ax = plt.subplot(a,b,i)
+        if i > 1:
+            np.random.shuffle(false_sample)
+        false_detected = false_sample > F0
+        fake_v_realSample(flux,detected,false_sample,false_detected,ax,α)
+    plt.show()
+randomDetectionMask(-1.2, 12)
 
 # for i in range(1, n+1):
 
