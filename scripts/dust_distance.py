@@ -54,8 +54,8 @@ for i in range(len(df)):
     dists = np.vstack( [dists, d(Tstar[i], Tdust(wls))] ) 
 dists = dists[1:] # delete initializer row
 
-# for i in range(7):
-#     plt.plot(Tstar, dists[:,i],'o')
+for i in range(7):
+    plt.plot(Tstar, dists[:,i],'o')
 # # plt.plot(Tstar, dJ, 'o')
 # # plt.plot(Tstar, dH, 'o')
 # # plt.plot(Tstar, dK, 'o')
@@ -63,35 +63,37 @@ dists = dists[1:] # delete initializer row
 # # plt.plot(Tstar, dW2,'o')
 # # plt.plot(Tstar, dW3,'o')
 # # plt.plot(Tstar, dW4,'o')
-# plt.legend(['J','H','K','W1','W2','W3','W4'])
-# plt.xlabel('Stellar Temperature (K)')
-# plt.ylabel('Distance of Emission (au)')
-# plt.show()
+plt.legend(['J','H','K','W1','W2','W3','W4'])
+plt.xlabel('Stellar Temperature (K)')
+plt.ylabel('Distance of Emission (au)')
+plt.show()
 
-# fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
-# # plot distribution of WISE magnitudes vs. distances
-# ax1.scatter(dists[:,3],tMags[3])
-# ax2.scatter(dists[:,4],tMags[4])
-# ax3.scatter(dists[:,5],tMags[5])
-# ax4.scatter(dists[:,6],tMags[6])
-# ax1.invert_yaxis()
-# ax2.invert_yaxis()
-# ax3.invert_yaxis()
-# ax4.invert_yaxis()
-# ax1.set_title('W1')
-# ax2.set_title('W2')
-# ax3.set_title('W3')
-# ax4.set_title('W4')
-# ax1.set_xlabel('Distance of Emission (au)')
-# ax1.set_ylabel('Magnitude of Emission')
-# ax2.set_xlabel('Distance of Emission (au)')
-# ax2.set_ylabel('Magnitude of Emission')
-# ax3.set_xlabel('Distance of Emission (au)')
-# ax3.set_ylabel('Magnitude of Emission')
-# ax4.set_xlabel('Distance of Emission (au)')
-# ax4.set_ylabel('Magnitude of Emission')
-# plt.show()
+fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
+# plot distribution of WISE magnitudes vs. distances
+ax1.scatter(dists[:,3],tMags[3])
+ax2.scatter(dists[:,4],tMags[4])
+ax3.scatter(dists[:,5],tMags[5])
+ax4.scatter(dists[:,6],tMags[6])
+ax1.invert_yaxis()
+ax2.invert_yaxis()
+ax3.invert_yaxis()
+ax4.invert_yaxis()
+ax1.set_title('W1')
+ax2.set_title('W2')
+ax3.set_title('W3')
+ax4.set_title('W4')
+ax1.set_xlabel('Distance of Emission (au)')
+ax1.set_ylabel('Magnitude of Emission')
+ax2.set_xlabel('Distance of Emission (au)')
+ax2.set_ylabel('Magnitude of Emission')
+ax3.set_xlabel('Distance of Emission (au)')
+ax3.set_ylabel('Magnitude of Emission')
+ax4.set_xlabel('Distance of Emission (au)')
+ax4.set_ylabel('Magnitude of Emission')
+plt.show()
 
+Fν = lambda Fν0, m_vega: Fν0*10**(-m_vega/2.5)
+Fλ = lambda Fλ0, m_vega: Fλ0*10**(-m_vega/2.5)
 # Reading in non-tight-binary WISE data
 from astropy.io import ascii
 from astropy.table import join
@@ -120,6 +122,7 @@ W1DaR = DaR['w1mpro']
 W2DaR = DaR['w2mpro']
 W3DaR = DaR['w3mpro']
 W4DaR = DaR['w4mpro']
+DaRMags = np.array([ np.median(DaR['j_m']),np.median(DaR['h_m']),np.median(DaR['k_m']),np.median(DaR['w1mpro']),np.median(DaR['w2mpro']),np.median(DaR['w3mpro']),np.median(DaR['w4mpro']) ])
 JK = K['j_m']
 HK = K['h_m']
 KK = K['k_m']
@@ -127,6 +130,7 @@ W1K = K['w1mpro']
 W2K = K['w2mpro']
 W3K = K['w3mpro']
 W4K = K['w4mpro']
+KMags = np.median( np.array([ np.median(K['j_m']),np.median(K['h_m']),np.median(K['k_m']),np.median(K['w1mpro']),np.median(K['w2mpro']),np.median(K['w3mpro']),np.median(K['w4mpro']) ]) )
 
 # Finding Average Teff of Da Rio 2016
 DaRio = pd.read_csv('~/Research/Spring2022_Research/DaRio2016_Teff.csv')
@@ -140,6 +144,7 @@ dDaRW1 = d(DaRioTemp,Tdust(W1_wl))
 dDaRW2 = d(DaRioTemp,Tdust(W2_wl))
 dDaRW3 = d(DaRioTemp,Tdust(W3_wl))
 dDaRW4 = d(DaRioTemp,Tdust(W4_wl))
+DaRDists = d(DaRioTemp, Tdust(wls))
 dKJ = d(KounkelTemp,Tdust(J_wl))
 dKH = d(KounkelTemp,Tdust(H_wl))
 dKK = d(KounkelTemp,Tdust(K_wl))
@@ -147,11 +152,11 @@ dKW1 = d(KounkelTemp,Tdust(W1_wl))
 dKW2 = d(KounkelTemp,Tdust(W2_wl))
 dKW3 = d(KounkelTemp,Tdust(W3_wl))
 dKW4 = d(KounkelTemp,Tdust(W4_wl))
+KDists = d(KounkelTemp, Tdust(wls))
 
 # Making "profiles" of disks with all WISE bands
 # gather only objects with data from all WISE bands:
-Fν = lambda Fν0, m_vega: Fν0*10**(-m_vega/2.5)
-Fλ = lambda Fλ0, m_vega: Fλ0*10**(-m_vega/2.5)
+
 FνJ = 1594
 FνH = 1024
 FνK = 666.7
@@ -224,13 +229,15 @@ for i in range(len(df2)):
     else:
         plt.plot(dists2[i], fluxes, '--', c=sm.to_rgba(Tstar2.loc[i]), label='Non-Detection')
 
-distancesDaR = np.array([dDaRJ.value, dDaRH.value, dDaRK.value, dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
+distancesDaR = DaRDists.value
+# np.array([dDaRJ.value, dDaRH.value, dDaRK.value, dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
 fluxesDaR = np.log10(np.array([J_freq.value*Fν(FνJ,np.median(JDaR)), H_freq.value*Fν(FνH,np.median(HDaR)), K_freq.value*Fν(FνK,np.median(KDaR)), W1_freq.value*Fν(FνW1,np.median(W1DaR)), W2_freq.value*Fν(FνW2,np.median(W2DaR)), W3_freq.value*Fν(FνW3,np.median(W3DaR)), W4_freq.value*Fν(FνW4,np.median(W4DaR))])/(J_freq.value*Fν(FνJ,np.median(JDaR))))
 fDaRstDev = np.sqrt(np.abs(fluxesDaR))
 plt.plot(distancesDaR, fluxesDaR, 'g--', alpha=0.4, linewidth=5)
 plt.fill_between(distancesDaR,fluxesDaR-fDaRstDev,fluxesDaR+fDaRstDev,alpha=0.2)
 
-distancesK = np.array([dKJ.value, dKH.value, dKK.value, dKW1.value, dKW2.value, dKW3.value, dKW4.value])
+distancesK = KDists.value
+# np.array([dKJ.value, dKH.value, dKK.value, dKW1.value, dKW2.value, dKW3.value, dKW4.value])
 fluxesK = np.log10(np.array([J_freq.value*Fν(FνJ,np.median(JK)), H_freq.value*Fν(FνH,np.median(HK)), K_freq.value*Fν(FνK,np.median(KK)), W1_freq.value*Fν(FνW1,np.median(W1K)), W2_freq.value*Fν(FνW2,np.median(W2K)), W3_freq.value*Fν(FνW3,np.median(W3K)), W4_freq.value*Fν(FνW4,np.median(W4K))])/(J_freq.value*Fν(FνJ,np.median(JK))))
 fKstDev = np.sqrt(np.abs(fluxesK))
 plt.plot(distancesK, fluxesK, 'b--', alpha=0.4, linewidth=5)
