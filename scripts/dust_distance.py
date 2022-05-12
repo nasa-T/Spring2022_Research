@@ -52,7 +52,7 @@ dists = np.empty(7) * u.AU # initialize 2D array for distances
 for i in range(len(df)):
     # add rows to array: each row is an object with distances for each wl
     dists = np.vstack( [dists, d(Tstar[i], Tdust(wls))] ) 
-dists = np.delete(dists, 0, axis=0) # delete initializer row
+dists = dists[1:] # delete initializer row
 
 # for i in range(7):
 #     plt.plot(Tstar, dists[:,i],'o')
@@ -163,7 +163,7 @@ FλW1 = 8.1787E-15
 FλW2 = 2.4150E-15
 FλW3 = 6.5151E-17
 FλW4 = 5.0901E-18
-Fν0s = np.array([1594, 1024, 66.7, 306.682, 170.663, 29.045, 8.284])
+Fν0s = np.array([1594, 1024, 666.7, 306.682, 170.663, 29.045, 8.284])
 df2 = df[df.loc[:,'W1'].notnull() & df.loc[:,'W2'].notnull() & df.loc[:,'W3'].notnull() & df.loc[:,'W4'].notnull()].reset_index()
 # magnitudes of bands in tight binary data
 tMags2 = np.array([ df2.loc[:,'J'], df2.loc[:,'H'], df2.loc[:,'K'], 
@@ -173,11 +173,10 @@ tMags2 = np.array([ df2.loc[:,'J'], df2.loc[:,'H'], df2.loc[:,'K'],
 tMags2 = np.swapaxes(tMags2,0,1)
 # print(tMags2[:][:2])
 tFluxes = np.empty(7)
-for i in range(5):
-    # add rows to array: each row is an object with distances for each wl
+for i in range(len(df2)):
+    # add rows to array: each row is an object with fluxes for each wl
     tFluxes = np.vstack( [tFluxes, Fν(Fν0s, tMags2[:][i])] ) 
-tFluxes = np.delete(tFluxes, 0, axis=0) # delete initializer row
-# print(tFluxes[:2])
+tFluxes = tFluxes[1:] # delete initializer row
 Tstar2 = df2.loc[:,'Teff'] * u.K
 J_2Fν = Fν(FνJ,df2.loc[:,'J'])
 H_2Fν = Fν(FνH,df2.loc[:,'H'])
@@ -201,8 +200,7 @@ dists2 = np.empty(7) * u.AU # initialize 2D array for distances
 for i in range(len(df2)):
     # add rows to array: each row is an object with with distances for each wl
     dists2 = np.vstack( [dists2, d(Tstar2[i], Tdust(wls))] ) 
-dists2 = np.delete(dists, 0, axis=0) # delete initializer row
-
+dists2 = dists2[1:] # delete initializer row
 
 norm = mpl.colors.Normalize(vmin=np.min(Tstar2), vmax=np.max(Tstar2))
 cmap = mpl.cm.autumn
@@ -210,15 +208,21 @@ sm = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
 plt.xscale('log')
 # plt.yscale('log')
 
+# for i in range(len(df2)):
+#     distances = np.array([dJ.loc[i], dH.loc[i], dK.loc[i], d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
+#     fluxes = np.log10(np.array([J_freq.value*J_2Fν.loc[i], H_freq.value*H_2Fν.loc[i], K_freq.value*K_2Fν.loc[i], W1_freq.value*W1_2Fν.loc[i], W2_freq.value*W2_2Fν.loc[i],W3_freq.value*W3_2Fν.loc[i], W4_freq.value*W4_2Fν.loc[i]])/(J_freq.value*J_2Fν.loc[i]))
+#     plt.text(distances[-1],fluxes[-1],df2.loc[i,'Disk Mass (Mjup)'])
+#     if df2.loc[i,'Disk Mass err'] != -10:
+#         plt.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]), label='Detection')
+#     else:
+#         plt.plot(distances, fluxes, '--', c=sm.to_rgba(Tstar2.loc[i]), label='Non-Detection')
 for i in range(len(df2)):
-    distances = np.array([dJ.loc[i], dH.loc[i], dK.loc[i], d2W1.loc[i], d2W2.loc[i], d2W3.loc[i], d2W4.loc[i]])
-    fluxes = np.log10(np.array([J_freq.value*J_2Fν.loc[i], H_freq.value*H_2Fν.loc[i], K_freq.value*K_2Fν.loc[i], W1_freq.value*W1_2Fν.loc[i], W2_freq.value*W2_2Fν.loc[i],W3_freq.value*W3_2Fν.loc[i], W4_freq.value*W4_2Fν.loc[i]])/(J_freq.value*J_2Fν.loc[i]))
-    plt.text(distances[-1],fluxes[-1],df2.loc[i,'Disk Mass (Mjup)'])
+    fluxes = np.log10(freqs.value*tFluxes[i]/(freqs[0].value*tFluxes[i][0]))
+    plt.text(dists[i][-1].value,fluxes[-1],df2.loc[i,'Disk Mass (Mjup)'])
     if df2.loc[i,'Disk Mass err'] != -10:
-        plt.plot(distances, fluxes, c=sm.to_rgba(Tstar2.loc[i]), label='Detection')
-        
+        plt.plot(dists2[i], fluxes, c=sm.to_rgba(Tstar2.loc[i]), label='Detection')
     else:
-        plt.plot(distances, fluxes, '--', c=sm.to_rgba(Tstar2.loc[i]), label='Non-Detection')
+        plt.plot(dists2[i], fluxes, '--', c=sm.to_rgba(Tstar2.loc[i]), label='Non-Detection')
 
 distancesDaR = np.array([dDaRJ.value, dDaRH.value, dDaRK.value, dDaRW1.value, dDaRW2.value, dDaRW3.value, dDaRW4.value])
 fluxesDaR = np.log10(np.array([J_freq.value*Fν(FνJ,np.median(JDaR)), H_freq.value*Fν(FνH,np.median(HDaR)), K_freq.value*Fν(FνK,np.median(KDaR)), W1_freq.value*Fν(FνW1,np.median(W1DaR)), W2_freq.value*Fν(FνW2,np.median(W2DaR)), W3_freq.value*Fν(FνW3,np.median(W3DaR)), W4_freq.value*Fν(FνW4,np.median(W4DaR))])/(J_freq.value*Fν(FνJ,np.median(JDaR))))
