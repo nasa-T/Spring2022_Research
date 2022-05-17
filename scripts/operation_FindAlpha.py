@@ -28,11 +28,7 @@ def fake_v_realSample(realFlux,realDetected,fakeFlux,fakeDetected, axis,alpha):
     kmf.fit(realFlux, realDetected, label='Actual Data')
     kmf.plot_cumulative_density(ax=axis)
     axis.set_xlabel('Flux (Jy)')
-# ax = plt.subplot(1,1,1)
-# false_sample = np.sort(rndm(min(flux), max(flux), g=-1.1+1, size=len(df)))
-# false_detected = false_sample > F0
-# fake_v_realSample(flux,detected,false_sample,false_detected,ax)
-# plt.show()
+
 def closestFactorPair(num):
     """Find the pair of factors of num that are closest together;
     implemented here for axes sizing; 
@@ -45,6 +41,7 @@ def closestFactorPair(num):
         a += 1
     # return pair of factors found
     return (a, num//a)
+
 def findingAlpha(alphaRange):
     """Makes a bunch of plots of fake data for each alpha value and plots 
     against real data; input an array of desired alpha values to look at; 
@@ -63,6 +60,7 @@ def findingAlpha(alphaRange):
         fake_v_realSample(flux,detected,false_sample,false_detected,ax, round(α,2))
     plt.show()
 findingAlpha(α_range)
+
 # use randomized order for fake detection mask
 def randomDetectionMask(α=-1.1,n=6):
     """Similar to findingAlpha but each iteration maintains the same α but 
