@@ -24,15 +24,19 @@ def barPlotting(dataset,wiseBand):
     heights = np.array([len(both),len(WnoA),len(AnoW),len(noWnoA)])
     return heights
 
+# collect heights for each bar graph
 heights1 = barPlotting(df,'W1')
 heights2 = barPlotting(df,'W2')
 heights3 = barPlotting(df,'W3')
 heights4 = barPlotting(df,'W4')
+# put heights into an array with dimensions of axes array
 heights = np.array([[heights1, heights2], [heights3, heights4]])
 for i in range(2):
     for j in range(2):
         for n in range(0,4):
+            # label each bar with percentage of all data
             ax[i][j].text(n,heights[j][i][n],str(round(heights[j][i][n]/len(df),3)*100)+'%',ha='center')
+# plot bar graph on each axis
 ax[0][0].bar(['both','WISE no ALMA', 'ALMA no WISE', 'No Data'], heights1)
 ax[0][0].set_title('ALMA-W1 correlation')
 ax[1][0].bar(['both','WISE no ALMA', 'ALMA no WISE', 'No Data'], heights2)

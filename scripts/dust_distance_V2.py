@@ -10,7 +10,7 @@ SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers2.csv'
 
 df = pd.read_csv(SOURCE)
 df = df.loc[:108] # non-data rows removed
-# wavelength of each band
+# wavelength of each band (J,H,K,W1-4)
 wls = np.array([ 1.235, 1.662, 2.159, 3.3526, 4.6028, 11.5608, 22.0883 ]) * u.micron
 # frequency of each band
 freqs = c.cgs.to(u.micron/u.s) / wls
@@ -28,7 +28,9 @@ for i in range(len(df)):
     # add rows to array: each row is an object with distances for each wl
     dists = np.vstack( [dists, d(Tstar[i], Tdust(wls))] ) 
 dists = dists[1:] # delete initializer row
+# dists has dimensions Nobj x Nband (Nobj: number of objects, Nband: number of bands)
 
+# plot distribution of distances given temps of stars
 for i in range(7):
     plt.plot(Tstar, dists[:,i],'o')
 plt.legend(['J','H','K','W1','W2','W3','W4'])
@@ -84,14 +86,15 @@ DaR2mHQ = DaR2mass[DaR2mass['ph_qual']=='AAA']
 DaRwHQ = DaRwise[DaRwise['ph_qual']=='AAAA']
 K2mHQ = K2mass[K2mass['ph_qual']=='AAA']
 KwHQ = Kwise[Kwise['ph_qual']=='AAAA']
+# put WISE and 2MASS data into one table for DaRio and Kounkel data
 DaR = join(DaR2mHQ, DaRwHQ, keys=['ra_01','dec_01'])
 K = join(K2mHQ, KwHQ, keys=['ra_01','dec_01'])
 
-# Magnitudes of each band and conversion to fluxes for DaRio and Kounkel data
+# Median magnitude of each band and conversion to fluxes for DaRio and Kounkel data
 DaRMags = np.array([ np.median(DaR['j_m']),np.median(DaR['h_m']),np.median(DaR['k_m']),np.median(DaR['w1mpro']),np.median(DaR['w2mpro']),np.median(DaR['w3mpro']),np.median(DaR['w4mpro']) ])
 DaRFluxes = Fν(Fν0s, DaRMags)
 KMags = np.array([ np.median(K['j_m']),np.median(K['h_m']),np.median(K['k_m']),np.median(K['w1mpro']),np.median(K['w2mpro']),np.median(K['w3mpro']),np.median(K['w4mpro']) ])
-KFluxes = Fν(Fν0s, KMags)
+KFluxes = Fν(Fν0s, KMags) # dimensions 1 x 7
 
 # Finding Average Teff of Da Rio 2016
 DaRio = pd.read_csv('~/Research/Spring2022_Research/DaRio2016_Teff.csv')
@@ -99,6 +102,7 @@ DaRioTemp = np.mean(DaRio.loc[:,'Teff']) * u.K
 Kounkel = pd.read_csv('~/Research/Spring2022_Research/Kounkel2016_Teff.csv')
 KounkelTemp = np.mean(Kounkel.loc[:,'Teff']) * u.K
 # distances for corresponding wavelengths in DaRio and Kounkel data
+# 1-D arrays
 DaRDists = d(DaRioTemp, Tdust(wls))
 KDists = d(KounkelTemp, Tdust(wls))
 
@@ -110,14 +114,13 @@ df2 = df[df.loc[:,'W1'].notnull() & df.loc[:,'W2'].notnull() & df.loc[:,'W3'].no
 tMags2 = np.array([ df2.loc[:,'J'], df2.loc[:,'H'], df2.loc[:,'K'], 
                     df2.loc[:,'W1'], df2.loc[:,'W2'], df2.loc[:,'W3'], 
                     df2.loc[:,'W4'] ])
-# tMags2 = np.empty(7) * u.AU # initialize 2D array for distances
-tMags2 = np.swapaxes(tMags2,0,1)
-# print(tMags2[:][:2])
-tFluxes = np.empty(7)
+tMags2 = np.swapaxes(tMags2,0,1) # make dimensions Nobj x Nband
+tFluxes = np.empty(7) # initialize array for tight-binary fluxes
 for i in range(len(df2)):
     # add rows to array: each row is an object with fluxes for each wl
     tFluxes = np.vstack( [tFluxes, Fν(Fν0s, tMags2[:][i])] ) 
 tFluxes = tFluxes[1:] # delete initializer row
+# tFluxes is a 2-D array with dimensions Nobj x Nband
 Tstar2 = df2.loc[:,'Teff'] * u.K
 dists2 = np.empty(7) * u.AU # initialize 2D array for distances
 for i in range(len(df2)):
@@ -125,24 +128,35 @@ for i in range(len(df2)):
     dists2 = np.vstack( [dists2, d(Tstar2[i], Tdust(wls))] ) 
 dists2 = dists2[1:] # delete initializer row
 
+# setting up colorbar for representing temperatures of objects
 norm = mpl.colors.Normalize(vmin=np.min(Tstar2), vmax=np.max(Tstar2))
 cmap = mpl.cm.autumn
 sm = mpl.cm.ScalarMappable(norm=norm, cmap=cmap)
 plt.xscale('log')
 # plt.yscale('log')
 
+# loop through each object
 for i in range(len(df2)):
+    # make array of (normalized) fluxes for one object
+    # normalization of fluxes: ν*Fν/(J-band ν*Fν)
     fluxes = np.log10(freqs.value*tFluxes[i]/(freqs[0].value*tFluxes[i][0]))
+    # label object at the end of light curve with disk mass (from ALMA data)
     plt.text(dists2[i][-1].value,fluxes[-1],df2.loc[i,'Disk Mass (Mjup)'])
+    # differentiate between detected and non-detected objects
     if df2.loc[i,'Disk Mass err'] != -10:
+        # plot normalized fluxes vs distance for one object
         plt.plot(dists2[i], fluxes, c=sm.to_rgba(Tstar2.loc[i]), label='Detection')
     else:
         plt.plot(dists2[i], fluxes, '--', c=sm.to_rgba(Tstar2.loc[i]), label='Non-Detection')
 
-distancesDaR = DaRDists.value
+distancesDaR = DaRDists.value # array of distances for DaR data
+# normalize fluxes
 fluxesDaR = np.log10(freqs*DaRFluxes/(freqs[0]*DaRFluxes[0]))
+# poisson standard deviation; will change to errors provided by tables
 fDaRstDev = np.sqrt(np.abs(fluxesDaR))
+# plot normalized fluxes vs distance
 plt.plot(distancesDaR, fluxesDaR, 'g--', alpha=0.4, linewidth=5)
+# plot filled area of error for whole curve
 plt.fill_between(distancesDaR,fluxesDaR-fDaRstDev,fluxesDaR+fDaRstDev,alpha=0.2)
 
 distancesK = KDists.value
@@ -157,6 +171,7 @@ plt.title('Light Curve of Disks')
 plt.xlabel('Distance of Emission (au)')
 plt.ylabel('Flux of Emission log( (νFν) / (νFν)J )')
 
+# create a legend for detections and non-detections using dummy lines
 import matplotlib.lines as mlines
 legendLine1 = mlines.Line2D([], [], color='black', linestyle='-', label='Detections')
 legendLine2 = mlines.Line2D([], [], color='black', linestyle='--', label='Non-Detections')

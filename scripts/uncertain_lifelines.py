@@ -1,8 +1,3 @@
-# np.random.randn()
-# create Lifelines based on uncertainty of flux
-# convert flux to mass (Peter's Thesis)
-# something more trivial
-
 # flux to mass: M = (F * dist**2)/ (2.3 * 0.01 * B(20))
 # dust opacity = 2.3; dust-to-gas ratio = 0.01; 
 # B(20) = Planck blackbody function at avg-temp = 20 K;
@@ -12,8 +7,6 @@ import matplotlib.pyplot as plt
 import numpy as np
 import pandas as pd
 from astropy.constants import c, h, k_B, M_jup, pc
-# e.g. M_jup.cgs.value
-# p_errors = -10: make error range the size of cluster 
 
 SOURCE = '~/Research/Spring2022_Research/ALMA_tight_binaries_Data_keepers2.csv'
 df = pd.read_csv(SOURCE)
@@ -27,7 +20,7 @@ dist = 1000/df.loc[:,'p'] * pc.cgs.value # distance
 dist_err = df.loc[:,'p_error'] / df.loc[:,'p'] * dist # distance error
 
 
-wl = .13 # wavelength of interest (ALMA Band 6)
+wl = .13 # wavelength of interest in centimeters (ALMA Band 6)
 freq = c.cgs.value / wl # frequency of interest
 freq = (249.5 + 252 + 265 + 267.56) / 4 * 10**9
 # freq = 255.5E9
@@ -52,6 +45,7 @@ for i in range(n):
     rFlux = flux + flux_err * np.random.randn() 
     rDist = dist + dist_err * np.random.randn()
     masses = mass(rFlux, rDist) # masses calculated from random fluxes and distances
+    # fit lifelines
     kmf = KaplanMeierFitter()
     kmf.fit(masses, detected)
     kmf.plot_cumulative_density(legend=False)

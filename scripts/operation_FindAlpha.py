@@ -81,23 +81,4 @@ def randomDetectionMask(α=-1.1,n=6):
         # plot real and fake samples
         fake_v_realSample(flux,detected,false_sample,false_detected,ax,α)
     plt.show()
-randomDetectionMask(-1.2, 12)
-
-# for i in range(1, n+1):
-
-# kmf = KaplanMeierFitter()
-# for i in range(1,n+1):
-# # for α in α_range:
-#     α = round(α_range[i-1],2)
-#     ax = plt.subplot(3,2,i)
-#     # making a plot for each α value giving a false sample (based on power-law)
-#     # sort the false sample to compare to the sorted minimum detections
-#     false_sample = np.sort(rndm(min(flux), max(flux), g=α+1, size=len(df)))
-#     false_detected = false_sample > F0
-#     kmf.fit(false_sample, false_detected, label='α = ' +str(α))
-#     kmf.plot_cumulative_density(ax=ax)
-#     kmf.fit(flux, detected, label='Actual Data')
-#     kmf.plot_cumulative_density(ax=ax)
-#     ax.set_xlabel('Flux (Jy)')
-# plt.show()
-
+randomDetectionMask(-1.2)
