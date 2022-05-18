@@ -36,6 +36,7 @@ for i in range(7):
 plt.legend(['J','H','K','W1','W2','W3','W4'])
 plt.xlabel('Stellar Temperature (K)')
 plt.ylabel('Distance of Emission (au)')
+# plt.savefig('distance_v_temperature.png')
 plt.show()
 
 fig, ((ax1,ax2),(ax3,ax4)) = plt.subplots(2,2)
@@ -60,6 +61,7 @@ ax3.set_xlabel('Distance of Emission (au)')
 ax3.set_ylabel('Magnitude of Emission')
 ax4.set_xlabel('Distance of Emission (au)')
 ax4.set_ylabel('Magnitude of Emission')
+# plt.savefig('WISE_magnitude_distribution.png')
 plt.show()
 
 # conversion to Fν and Fλ given zero-mag fluxes and magnitude of object in relevant band
@@ -176,6 +178,6 @@ import matplotlib.lines as mlines
 legendLine1 = mlines.Line2D([], [], color='black', linestyle='-', label='Detections')
 legendLine2 = mlines.Line2D([], [], color='black', linestyle='--', label='Non-Detections')
 plt.legend([legendLine1,legendLine2],['Detections','Non-Detections'])
+# plt.savefig('light_curves.png')
 plt.show()
-
 

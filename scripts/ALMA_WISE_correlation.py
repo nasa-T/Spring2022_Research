@@ -46,4 +46,4 @@ ax[0][1].set_title('ALMA-W3 correlation')
 ax[1][1].bar(['both','WISE no ALMA', 'ALMA no WISE', 'No Data'], heights4)
 ax[1][1].set_title('ALMA-W4 correlation')
 plt.show()
-
+# plt.savefig('ALMA_WISE_correlation.png')

@@ -40,6 +40,7 @@ print(opacity, B(freq, 20))
 # print(mass(flux, dist))
 from lifelines import KaplanMeierFitter
 n = 10 # how many different plots
+ax = plt.subplot(1,1,1)
 for i in range(n):
     # fluxes and distances randomly picked in gaussian distribution:
     rFlux = flux + flux_err * np.random.randn() 
@@ -48,5 +49,7 @@ for i in range(n):
     # fit lifelines
     kmf = KaplanMeierFitter()
     kmf.fit(masses, detected)
-    kmf.plot_cumulative_density(legend=False)
+    kmf.plot_cumulative_density(legend=False, ax=ax)
+    ax.set_xlabel('Mass (Mjup)')
+# plt.savefig('distribution_of_lifelines.png')
 plt.show()

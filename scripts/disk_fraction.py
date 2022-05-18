@@ -160,3 +160,4 @@ ax3.set_xlabel('W3-W4')
 ax3.set_ylabel('W1-W2')
 
 plt.show()
+# plt.savefig('J-H_H-K_&_WISE_diskClassification.png')

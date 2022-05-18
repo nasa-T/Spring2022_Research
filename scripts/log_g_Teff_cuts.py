@@ -43,6 +43,7 @@ plt.ylabel('log(g)')
 # plt.colorbar(mpl.cm.ScalarMappable(norm=norm, cmap=cmap), label='parallax', orientation='vertical')
 # plt.plot(teff, log_g, 'o') # plot all data
 plt.plot(cut_teff, cut_log_g, 'k-') # plot cutoff
+# plt.savefig('log_g_vs_Teff_pre-cut.png')
 plt.show()
 
 # create lines for log(g)-Teff cutoffs to compare to data
@@ -90,7 +91,9 @@ plt.legend(['Too Far', 'Just Right', 'Too Close'])
 
 # plt.plot(teff, log_g, 'o')
 plt.plot(cut_teff, cut_log_g, 'k-') # plot cutoff lines
+# plt.savefig('log_g_vs_Teff_post-cut.png')
 plt.show()
+
 # send cut and kept data to CSVs
 # df2.to_csv(DESTINATION_KEEPERS, index=False)
 # df3.to_csv(DESTINATION_ANNIHILATED, index=False)
