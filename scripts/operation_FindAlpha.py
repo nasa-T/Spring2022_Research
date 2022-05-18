@@ -60,7 +60,7 @@ def findingAlpha(alphaRange):
         fake_v_realSample(flux,detected,false_sample,false_detected,ax, round(α,2))
 
 findingAlpha(α_range)
-# plt.savefig('fitting_α_to_data.png')
+# plt.savefig('fitting_alpha_to_data.png')
 plt.show()
 # use randomized order for fake detection mask
 def randomDetectionMask(α=-1.1,n=6):
